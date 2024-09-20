@@ -105,8 +105,8 @@ public class ChessBoard {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (int row = 1; row < board.length; row++) {
-            for (int col = 1; col < board[row].length; col++) {
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
                 ChessPosition pos = new ChessPosition(row, col);
                 ChessPiece pie = getPiece(pos);
                 if (pie != null) {
