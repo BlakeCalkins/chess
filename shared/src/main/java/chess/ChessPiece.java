@@ -53,7 +53,17 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        RookMovesCalculator calculator = new RookMovesCalculator(board, myPosition);
+        return calculator.pieceMoves();
+    }
+
+    public static void main(String[] args) {
+        ChessBoard board = new ChessBoard();
+        ChessPiece piece = new ChessPiece(ChessGame.TeamColor.WHITE,PieceType.ROOK);
+        ChessPosition pos = new ChessPosition(4,4);
+        board.addPiece(pos, piece);
+        Collection<ChessMove> moves = piece.pieceMoves(board, pos);
+        System.out.print(moves);
     }
 
     @Override
