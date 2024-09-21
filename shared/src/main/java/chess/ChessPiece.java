@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -53,17 +54,15 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        PawnMovesCalculator calculator = new PawnMovesCalculator(board, myPosition);
-        return calculator.pieceMoves();
-    }
-
-    public static void main(String[] args) {
-        ChessBoard board = new ChessBoard();
-        ChessPiece piece = new ChessPiece(ChessGame.TeamColor.WHITE,PieceType.ROOK);
-        ChessPosition pos = new ChessPosition(4,4);
-        board.addPiece(pos, piece);
-        Collection<ChessMove> moves = piece.pieceMoves(board, pos);
-        System.out.print(moves);
+        return switch (type) {
+            case ROOK -> new RookMovesCalculator(board, myPosition).pieceMoves();
+            case BISHOP -> new BishopMovesCalculator(board, myPosition).pieceMoves();
+            case KNIGHT -> new KnightMovesCalculator(board, myPosition).pieceMoves();
+            case PAWN -> new PawnMovesCalculator(board, myPosition).pieceMoves();
+            case QUEEN -> new QueenMovesCalculator(board, myPosition).pieceMoves();
+            case KING -> new KingMovesCalculator(board, myPosition).pieceMoves();
+            default -> new ArrayList<>();
+        };
     }
 
     @Override
