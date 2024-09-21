@@ -74,6 +74,62 @@ public abstract class PieceMovesCalculator {
         return movesCollection;
     }
 
+    public Collection<ChessMove> diagonalMoves() {
+        int row = currRow + 1;
+        int col = currCol + 1;
+        while (row <= 8 && col <= 8) {
+            ChessPosition pos = new ChessPosition(row, col);
+            if (board.getPiece(pos) == null || board.getPiece(pos).getTeamColor() != color) {
+                ChessMove move = new ChessMove(position, pos, null);
+                movesCollection.add(move);
+            } if (board.getPiece(pos) != null) {
+                break;
+            }
+            row++;
+            col++;
+        }
+        row = currRow + 1;
+        col = currCol - 1;
+        while (row <= 8 && col >= 1) {
+            ChessPosition pos = new ChessPosition(row, col);
+            if (board.getPiece(pos) == null || board.getPiece(pos).getTeamColor() != color) {
+                ChessMove move = new ChessMove(position, pos, null);
+                movesCollection.add(move);
+            } if (board.getPiece(pos) != null) {
+                break;
+            }
+            row++;
+            col--;
+        }
+        row = currRow - 1;
+        col = currCol + 1;
+        while (row >= 1 && col <= 8) {
+            ChessPosition pos = new ChessPosition(row, col);
+            if (board.getPiece(pos) == null || board.getPiece(pos).getTeamColor() != color) {
+                ChessMove move = new ChessMove(position, pos, null);
+                movesCollection.add(move);
+            } if (board.getPiece(pos) != null) {
+                break;
+            }
+            row--;
+            col++;
+        }
+        row = currRow - 1;
+        col = currCol - 1;
+        while (row >= 1 && col >= 1) {
+            ChessPosition pos = new ChessPosition(row, col);
+            if (board.getPiece(pos) == null || board.getPiece(pos).getTeamColor() != color) {
+                ChessMove move = new ChessMove(position, pos, null);
+                movesCollection.add(move);
+            } if (board.getPiece(pos) != null) {
+                break;
+            }
+            row--;
+            col--;
+        }
+        return movesCollection;
+    }
+
     public Collection<ChessMove> pieceMoves() {
         return new ArrayList<>();
     }
