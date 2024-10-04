@@ -32,7 +32,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        teamTurn = team;
     }
 
     /**
@@ -52,6 +52,23 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         throw new RuntimeException("Not implemented");
+    }
+
+    private boolean checkMove(ChessPiece piece, ChessMove move) {
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+        TeamColor color = piece.getTeamColor();
+        ChessBoard cloned;
+        try {
+            cloned = (ChessBoard) board.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+        cloned.removePiece(startPosition);
+        if (cloned.getPiece(endPosition) != null)
+            cloned.removePiece(endPosition);
+        cloned.addPiece(endPosition, piece);
+        return !isInCheck(color);
     }
 
     /**
@@ -107,6 +124,8 @@ public class ChessGame {
         return false;
     }
 
+
+
     /**
      * Determines if the given team is in checkmate
      *
@@ -114,7 +133,24 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (!isInCheck(teamColor))
+            return false;
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    Collection<ChessMove> moves = validMoves(position);
+                    for (ChessMove move : moves) {
+                        if (checkMove(piece, move)) {
+                            return false; // A valid move exists that prevents checkmate
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
