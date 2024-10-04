@@ -64,6 +64,27 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
+    private boolean hasPosition(Collection<ChessMove> moves, ChessPosition position) {
+        for (ChessMove move : moves) {
+            if (move.getEndPosition().equals(position))
+                return true;
+        }
+        return false;
+    }
+
+    private ChessPosition getKingPosition(TeamColor teamColor, ChessBoard tryBoard) {
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = tryBoard.getPiece(position);
+                if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor) {
+                    return position;
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Determines if the given team is in check
      *
@@ -71,7 +92,19 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition kingPosition = getKingPosition(teamColor, board);
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+                if (piece != null && piece.getTeamColor() != teamColor) {
+                    Collection<ChessMove> moves = piece.pieceMoves(board, position);
+                    if (hasPosition(moves, kingPosition))
+                        return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -101,7 +134,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
