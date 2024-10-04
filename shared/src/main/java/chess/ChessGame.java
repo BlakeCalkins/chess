@@ -68,7 +68,7 @@ public class ChessGame {
         if (cloned.getPiece(endPosition) != null)
             cloned.removePiece(endPosition);
         cloned.addPiece(endPosition, piece);
-        return !isInCheck(color);
+        return !isInCheck(color, cloned);
     }
 
     /**
@@ -116,6 +116,22 @@ public class ChessGame {
                 ChessPiece piece = board.getPiece(position);
                 if (piece != null && piece.getTeamColor() != teamColor) {
                     Collection<ChessMove> moves = piece.pieceMoves(board, position);
+                    if (hasPosition(moves, kingPosition))
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isInCheck(TeamColor teamColor, ChessBoard clonedBoard) {
+        ChessPosition kingPosition = getKingPosition(teamColor, clonedBoard);
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = clonedBoard.getPiece(position);
+                if (piece != null && piece.getTeamColor() != teamColor) {
+                    Collection<ChessMove> moves = piece.pieceMoves(clonedBoard, position);
                     if (hasPosition(moves, kingPosition))
                         return true;
                 }
