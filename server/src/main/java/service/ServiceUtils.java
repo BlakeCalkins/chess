@@ -31,14 +31,5 @@ public final class ServiceUtils {
         authDAO.createAuth(data);
     }
 
-//    // Static utility method
-//    public static void log(String message) {
-//        System.out.println("Log: " + message);
-//    }
-//
-//    // Another static utility method
-//    public static int add(int a, int b) {
-//        return a + b;
-//    }
 }
 
