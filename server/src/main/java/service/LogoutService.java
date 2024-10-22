@@ -3,8 +3,6 @@ package service;
 import dataaccess.DataAccessException;
 import model.AuthData;
 
-import java.util.Objects;
-
 public class LogoutService {
     LogoutRequest request;
 
@@ -14,7 +12,7 @@ public class LogoutService {
 
     public LogoutResult logoutUser() throws DataAccessException {
         AuthData authData = ServiceUtils.getAuth(request.authToken());
-        if (authData == null || !Objects.equals(authData.authToken(), request.authToken())) {
+        if (authData == null) {
             return new LogoutResult("Not authorized");
         }
         ServiceUtils.deleteAuth(request.authToken());
