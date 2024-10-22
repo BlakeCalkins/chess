@@ -33,4 +33,14 @@ public class MemoryGameDAO implements GameDAO {
     public void updateGame(GameData data) throws DataAccessException {
         games.put(data.gameID(), data);
     }
+
+    public int getHighestID() throws DataAccessException {
+        int maxKey = 0;
+        for (Integer key : games.keySet()) {
+            if (key > maxKey) {
+                maxKey = key;  // Update maxKey if the current key is larger
+            }
+        }
+        return maxKey;
+    }
 }

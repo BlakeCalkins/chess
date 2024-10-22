@@ -7,7 +7,6 @@ import model.GameData;
 
 public class CreateGameService {
     CreateGameRequest request;
-    int currID = 0;
 
     public CreateGameService(CreateGameRequest request) {
         this.request = request;
@@ -23,8 +22,9 @@ public class CreateGameService {
         return new CreateGameResult(gameData.gameID(), "");
     }
 
-    public GameData createGameData() {
-        currID++;
-        return new GameData(currID, "", "", request.gameName(), new ChessGame());
+    public GameData createGameData() throws DataAccessException {
+        int id = ServiceUtils.getHighestID();
+        id++;
+        return new GameData(id, "", "", request.gameName(), new ChessGame());
     }
 }

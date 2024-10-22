@@ -47,5 +47,9 @@ public final class ServiceUtils {
     public static GameData getGame(int gameID) throws DataAccessException {
         return gameDAO.getGame(gameID);
     }
+
+    public static int getHighestID() throws DataAccessException {
+        return gameDAO.getHighestID();
+    }
 }
 
