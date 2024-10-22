@@ -20,6 +20,7 @@ public class RegisterTest {
         System.out.println("test result auth token:" + testResult.authToken());
         System.out.print("actual result auth token:" + actualResult.authToken());
         Assertions.assertNotEquals(testResult, actualResult);
+        Assertions.assertEquals("John", testResult.username());
     }
 
     @Test
