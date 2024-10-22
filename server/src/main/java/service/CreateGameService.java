@@ -2,7 +2,6 @@ package service;
 
 import chess.ChessGame;
 import dataaccess.DataAccessException;
-import model.AuthData;
 import model.GameData;
 
 public class CreateGameService {
@@ -13,8 +12,7 @@ public class CreateGameService {
     }
 
     public CreateGameResult createGame() throws DataAccessException {
-        AuthData authData = ServiceUtils.getAuth(request.authToken());
-        if (authData == null) {
+        if (!ServiceUtils.verifyAuth(request.authToken())) {
             return new CreateGameResult(null, "Not authorized");
         }
         GameData gameData = createGameData();

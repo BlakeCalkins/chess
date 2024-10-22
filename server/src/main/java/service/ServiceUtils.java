@@ -48,8 +48,20 @@ public final class ServiceUtils {
         return gameDAO.getGame(gameID);
     }
 
+    public static void updateGame(GameData data) throws DataAccessException {
+        gameDAO.updateGame(data);
+    }
+
     public static int getHighestID() throws DataAccessException {
         return gameDAO.getHighestID();
+    }
+
+    public static Boolean verifyAuth(String authToken) throws DataAccessException {
+        AuthData authData = ServiceUtils.getAuth(authToken);
+        if (authData == null) {
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
     }
 }
 
