@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.*;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import java.util.UUID;
 
@@ -37,6 +38,14 @@ public final class ServiceUtils {
 
     public static void deleteAuth(String authToken) throws DataAccessException {
         authDAO.deleteAuth(authToken);
+    }
+
+    public static void createGame(GameData data) throws DataAccessException {
+        gameDAO.createGame(data);
+    }
+
+    public static GameData getGame(int gameID) throws DataAccessException {
+        return gameDAO.getGame(gameID);
     }
 }
 
