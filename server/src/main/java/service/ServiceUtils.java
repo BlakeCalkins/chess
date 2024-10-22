@@ -31,5 +31,12 @@ public final class ServiceUtils {
         authDAO.createAuth(data);
     }
 
+    public static AuthData getAuth(String authToken) throws DataAccessException {
+        return authDAO.getAuth(authToken);
+    }
+
+    public static void deleteAuth(String authToken) throws DataAccessException {
+        authDAO.deleteAuth(authToken);
+    }
 }
 
