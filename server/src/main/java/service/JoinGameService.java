@@ -14,8 +14,17 @@ public class JoinGameService {
         if (!ServiceUtils.verifyAuth(request.authToken())) {
             return new JoinGameResult("Not authorized.");
         }
+        String username = ServiceUtils.getAuth(request.authToken()).username();
         GameData gameData = ServiceUtils.getGame(request.gameID());
-        ServiceUtils.updateGame(gameData);
+        if (gameData == null) {
+            return new JoinGameResult("No game with that ID.");
+        }
+        GameData newData = gameData;
+        switch (request.color()) {
+            case WHITE -> newData = new GameData(gameData.gameID(), username, gameData.blackUsername(), gameData.gameName(), gameData.game());
+            case BLACK -> newData = new GameData(gameData.gameID(), gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
+        }
+        ServiceUtils.updateGame(newData);
         return new JoinGameResult("");
     }
 
