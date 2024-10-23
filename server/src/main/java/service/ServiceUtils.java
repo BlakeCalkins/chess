@@ -22,12 +22,20 @@ public final class ServiceUtils {
         return UUID.randomUUID().toString();
     }
 
+    public static void clearUsers() throws DataAccessException {
+        userDAO.clearUsers();
+    }
+
     public static UserData getUser(String username) throws DataAccessException {
         return userDAO.getUser(username);
     }
 
     public static void createUser(UserData data) throws DataAccessException {
         userDAO.createUser(data);
+    }
+
+    public static void clearAuth() throws DataAccessException {
+        authDAO.clearAuth();
     }
 
     public static void createAuth(AuthData data) throws DataAccessException {
@@ -40,6 +48,10 @@ public final class ServiceUtils {
 
     public static void deleteAuth(String authToken) throws DataAccessException {
         authDAO.deleteAuth(authToken);
+    }
+
+    public static void clearGames() throws DataAccessException {
+        gameDAO.clearGames();
     }
 
     public static void createGame(GameData data) throws DataAccessException {
