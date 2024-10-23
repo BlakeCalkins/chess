@@ -4,6 +4,8 @@ import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+
+import java.util.List;
 import java.util.UUID;
 
 public final class ServiceUtils {
@@ -46,6 +48,10 @@ public final class ServiceUtils {
 
     public static GameData getGame(int gameID) throws DataAccessException {
         return gameDAO.getGame(gameID);
+    }
+
+    public static List<GameData> listGames() throws DataAccessException {
+        return gameDAO.listGames();
     }
 
     public static void updateGame(GameData data) throws DataAccessException {
