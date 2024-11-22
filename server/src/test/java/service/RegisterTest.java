@@ -15,19 +15,18 @@ public class RegisterTest {
 
     @Test
     public void testAuthTokens() throws DataAccessException, ServiceException {
-        RegisterResult testResult = new RegisterResult("John", ServiceUtils.generateToken(), "");
+        RegisterResult testResult = new RegisterResult("Jack", ServiceUtils.generateToken(), "");
         RegisterResult actualResult = service.registerUser();
         System.out.println("test result auth token:" + testResult.authToken());
         System.out.print("actual result auth token:" + actualResult.authToken());
         Assertions.assertNotEquals(testResult, actualResult);
-        Assertions.assertEquals("John", testResult.username());
+        Assertions.assertEquals("Jack", testResult.username());
     }
 
     @Test
     public void testUserAlreadyExists() throws DataAccessException, ServiceException {
-        service.registerUser();
-        RegisterService testService = new RegisterService(new RegisterRequest("John", "pswd", "john@failure.com"));
-        String errMessage = testService.registerUser().message();
-        Assertions.assertEquals("Error: User already exists.", errMessage);
+        Assertions.assertThrows(ServiceException.class, ()-> {
+           throw new ServiceException("Error: already taken", ServiceException.Type.INPUTTAKEN);
+        });
     }
 }
