@@ -2,9 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import service.ClearService;
-import service.RegisterRequest;
-import service.RegisterService;
+import service.*;
 import spark.*;
 
 public class Server {
@@ -21,6 +19,8 @@ public class Server {
         Spark.post("/user", this::registerUser);
 
 
+        Spark.exception(ServiceException.class, this::handleException);
+
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 
@@ -28,12 +28,22 @@ public class Server {
         return Spark.port();
     }
 
+    private void handleException(ServiceException exception, Request req, Response res) {
+        String result = new Gson().toJson(new ExceptionResult(exception.getMessage()));
+        res.body(result);
+        res.status(switch (exception.getType()){
+            case BADINPUT -> 400;
+            case BADAUTH -> 401;
+            case INPUTTAKEN -> 403;
+        });
+    }
 
-    private Object registerUser(Request req, Response res) throws DataAccessException {
+    private Object registerUser(Request req, Response res) throws DataAccessException, ServiceException {
         var reg = new Gson().fromJson(req.body(), RegisterRequest.class);
         regSer = new RegisterService(reg);
-        regSer.registerUser();
-        return new Gson().toJson(regSer);
+        RegisterResult result = regSer.registerUser();
+
+        return new Gson().toJson(result);
     }
     
     private Object clear(Request req, Response res) throws DataAccessException {

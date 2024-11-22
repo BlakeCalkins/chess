@@ -15,10 +15,11 @@ public class RegisterService {
         authData = new AuthData(ServiceUtils.generateToken(), request.username());
     }
 
-    public RegisterResult registerUser() throws DataAccessException {
+    public RegisterResult registerUser() throws DataAccessException, ServiceException {
         if (ServiceUtils.getUser(request.username()) != null) {
-            return new RegisterResult("", "", "Error: User already exists.");
+            throw new ServiceException("Error: already taken", ServiceException.Type.INPUTTAKEN);
         }
+
         ServiceUtils.createUser(userData);
         ServiceUtils.createAuth(authData);
         return new RegisterResult(request.username(), authData.authToken(), "");
