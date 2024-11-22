@@ -25,7 +25,7 @@ public class LogoutTest {
     @Test
     public void testLogoutFail() throws DataAccessException, ServiceException {
         logoutService = new LogoutService(new LogoutRequest(ServiceUtils.generateToken()));
-        LogoutResult result = logoutService.logoutUser();
-        Assertions.assertEquals("Not authorized", result.errMessage());
+        Exception exception = Assertions.assertThrows(ServiceException.class, logoutService::logoutUser, "Error: unauthorized");
+        Assertions.assertEquals("Error: unauthorized", exception.getMessage());
     }
 }
