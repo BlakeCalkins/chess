@@ -8,6 +8,7 @@ import spark.*;
 public class Server {
     RegisterService regSer;
     ClearService clearSer;
+    LoginService logSer;
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -17,6 +18,7 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::registerUser);
+        Spark.post("/session", this::loginUser);
 
 
         Spark.exception(ServiceException.class, this::handleException);
@@ -51,7 +53,13 @@ public class Server {
         clearSer.clear();
         res.status(200);
         return "";
+    }
 
+    private Object loginUser(Request req, Response res) throws DataAccessException, ServiceException {
+        var log = new Gson().fromJson(req.body(), LoginRequest.class);
+        logSer = new LoginService(log);
+        LoginResult result = logSer.loginUser();
+        return new Gson().toJson(result);
     }
 
 

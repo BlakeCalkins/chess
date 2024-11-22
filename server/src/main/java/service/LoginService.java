@@ -17,7 +17,6 @@ public class LoginService {
         UserData userData = ServiceUtils.getUser(request.username());
         if (!Objects.equals(userData.password(), request.password())) {
             throw new ServiceException("Access denied, wrong password.", ServiceException.Type.BADAUTH);
-//            return new LoginResult("", "", "Access denied, wrong password.");
         }
         AuthData authData = new AuthData(ServiceUtils.generateToken(), request.username());
         ServiceUtils.createAuth(authData);
