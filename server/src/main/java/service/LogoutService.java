@@ -9,9 +9,9 @@ public class LogoutService {
         this.request = request;
     }
 
-    public LogoutResult logoutUser() throws DataAccessException {
-        if (!ServiceUtils.verifyAuth(request.authToken())) {
-            return new LogoutResult("Not authorized");
+    public LogoutResult logoutUser() throws DataAccessException, ServiceException {
+        if (request == null || !ServiceUtils.verifyAuth(request.authToken())) {
+            throw new ServiceException("Error: unauthorized", ServiceException.Type.BADAUTH);
         }
         ServiceUtils.deleteAuth(request.authToken());
         return new LogoutResult("");
