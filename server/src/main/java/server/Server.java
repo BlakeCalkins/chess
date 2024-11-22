@@ -9,6 +9,7 @@ public class Server {
     RegisterService regSer;
     ClearService clearSer;
     LoginService logSer;
+    LogoutService outSer;
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -19,6 +20,7 @@ public class Server {
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::registerUser);
         Spark.post("/session", this::loginUser);
+        Spark.delete("/session", this::logoutUser);
 
 
         Spark.exception(ServiceException.class, this::handleException);
@@ -59,6 +61,13 @@ public class Server {
         var log = new Gson().fromJson(req.body(), LoginRequest.class);
         logSer = new LoginService(log);
         LoginResult result = logSer.loginUser();
+        return new Gson().toJson(result);
+    }
+
+    private Object logoutUser(Request req, Response res) throws DataAccessException, ServiceException {
+        var out = new Gson().fromJson(req.body(), LogoutRequest.class);
+        outSer = new LogoutService(out);
+        LogoutResult result = outSer.logoutUser();
         return new Gson().toJson(result);
     }
 
