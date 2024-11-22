@@ -11,7 +11,7 @@ public class ClearTest {
     public static ListGamesService listGamesService;
 
     @Test
-    public void testClearSuccess() throws DataAccessException {
+    public void testClearSuccess() throws DataAccessException, ServiceException {
         registerService = new RegisterService(new RegisterRequest("Blake", "pswd", "email"));
         String authToken = registerService.registerUser().authToken();
         createGameService = new CreateGameService(new CreateGameRequest(authToken, "game"));

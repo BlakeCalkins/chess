@@ -20,7 +20,7 @@ public class JoinGameTest {
 
 
     @Test
-    public void testWhiteUser() throws DataAccessException {
+    public void testWhiteUser() throws DataAccessException, ServiceException {
         String authToken = registerService.registerUser().authToken();
         gameService = new CreateGameService(new CreateGameRequest(authToken, "funGame"));
         gameService.createGame();
@@ -31,7 +31,7 @@ public class JoinGameTest {
     }
 
     @Test
-    public void testBlackUser() throws DataAccessException {
+    public void testBlackUser() throws DataAccessException, ServiceException {
         String authToken = registerService.registerUser().authToken();
         gameService = new CreateGameService(new CreateGameRequest(authToken, "funGame"));
         gameService.createGame();
@@ -42,7 +42,7 @@ public class JoinGameTest {
     }
 
     @Test
-    public void testBadId() throws DataAccessException {
+    public void testBadId() throws DataAccessException, ServiceException {
         String authToken = registerService.registerUser().authToken();
         gameService = new CreateGameService(new CreateGameRequest(authToken, "funGame"));
         gameService.createGame();

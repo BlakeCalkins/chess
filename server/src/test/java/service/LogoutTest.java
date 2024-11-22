@@ -15,7 +15,7 @@ public class LogoutTest {
     }
 
     @Test
-    public void testLogoutSuccessful() throws DataAccessException {
+    public void testLogoutSuccessful() throws DataAccessException, ServiceException {
         String authToken = registerService.registerUser().authToken();
         logoutService = new LogoutService(new LogoutRequest(authToken));
         LogoutResult result = logoutService.logoutUser();

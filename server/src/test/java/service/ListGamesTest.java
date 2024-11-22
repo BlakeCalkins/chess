@@ -18,7 +18,7 @@ public class ListGamesTest {
     static {
         try {
             authToken = registerService.registerUser().authToken();
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | ServiceException e) {
             throw new RuntimeException(e);
         }
     }

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class CreateGameTest {
 
     @Test
-    public void testCreateGame() throws DataAccessException {
+    public void testCreateGame() throws DataAccessException, ServiceException {
         RegisterService registerService = new RegisterService(new RegisterRequest("Blake", "psswrd", "blake@fake.com"));
         String authToken = registerService.registerUser().authToken();
         CreateGameService gameService = new CreateGameService(new CreateGameRequest(authToken, "firstGame"));

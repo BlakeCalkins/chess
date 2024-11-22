@@ -14,7 +14,7 @@ public class RegisterTest {
     }
 
     @Test
-    public void testAuthTokens() throws DataAccessException {
+    public void testAuthTokens() throws DataAccessException, ServiceException {
         RegisterResult testResult = new RegisterResult("John", ServiceUtils.generateToken(), "");
         RegisterResult actualResult = service.registerUser();
         System.out.println("test result auth token:" + testResult.authToken());
@@ -24,7 +24,7 @@ public class RegisterTest {
     }
 
     @Test
-    public void testUserAlreadyExists() throws DataAccessException {
+    public void testUserAlreadyExists() throws DataAccessException, ServiceException {
         service.registerUser();
         RegisterService testService = new RegisterService(new RegisterRequest("John", "pswd", "john@failure.com"));
         String errMessage = testService.registerUser().message();

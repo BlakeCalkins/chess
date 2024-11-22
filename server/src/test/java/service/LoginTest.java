@@ -10,7 +10,7 @@ public class LoginTest {
 
 
     @BeforeAll
-    public static void setUp() throws DataAccessException {
+    public static void setUp() throws DataAccessException, ServiceException {
         loginService = new LoginService(new LoginRequest("Blake", "assword"));
         RegisterService registerService = new RegisterService(new RegisterRequest("Blake", "assword", "blake@calkins.com"));
         registerService.registerUser();
