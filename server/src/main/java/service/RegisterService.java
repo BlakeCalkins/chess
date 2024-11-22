@@ -19,7 +19,9 @@ public class RegisterService {
         if (ServiceUtils.getUser(request.username()) != null) {
             throw new ServiceException("Error: already taken", ServiceException.Type.INPUTTAKEN);
         }
-
+        if (userData.password() == null || userData.email() == null || userData.username() == null) {
+            throw new ServiceException("Error: bad request", ServiceException.Type.BADINPUT);
+        }
         ServiceUtils.createUser(userData);
         ServiceUtils.createAuth(authData);
         return new RegisterResult(request.username(), authData.authToken(), "");
