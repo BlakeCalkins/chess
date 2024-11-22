@@ -17,16 +17,16 @@ public class LoginTest {
     }
 
     @Test
-    public void testLoginSuccessful() throws DataAccessException {
+    public void testLoginSuccessful() throws DataAccessException, ServiceException {
         LoginResult result = loginService.loginUser();
         Assertions.assertEquals(result.username(), "Blake");
         Assertions.assertEquals(result.message(), "");
     }
 
     @Test
-    public void testLoginFail() throws DataAccessException {
+    public void testLoginFail() throws DataAccessException, ServiceException {
         LoginService badLogin = new LoginService(new LoginRequest("Blake", "Password"));
-        LoginResult badResult = badLogin.loginUser();
-        Assertions.assertEquals("Access denied, wrong password.", badResult.message());
+        Exception exception = Assertions.assertThrows(ServiceException.class, badLogin::loginUser, "Access denied, wrong password.");
+        Assertions.assertEquals("Access denied, wrong password.", exception.getMessage());
     }
 }
