@@ -57,8 +57,8 @@ public class ChessBoard {
         for (int i = 1; i <= 8; i++) {
             addPiece(new ChessPosition(7, i), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
         }
-        addPiece(new ChessPosition(8, 1), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT));
-        addPiece(new ChessPosition(8, 2), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
+        addPiece(new ChessPosition(8, 1), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
+        addPiece(new ChessPosition(8, 2), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT));
         addPiece(new ChessPosition(8, 3), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
         addPiece(new ChessPosition(8, 4), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN));
         addPiece(new ChessPosition(8, 5), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
@@ -71,8 +71,16 @@ public class ChessBoard {
 
     @Override
     public String toString() {
+        StringBuilder str = new StringBuilder();
+        for (ChessPiece[] row : board) {
+            for (ChessPiece piece : row) {
+                if (piece != null) {
+                    str.append(piece);
+                }
+            }
+        }
         return "ChessBoard{" +
-                "board=" + Arrays.toString(board) +
+                "board=" + str +
                 '}';
     }
 
@@ -88,5 +96,11 @@ public class ChessBoard {
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(board);
+    }
+
+    public static void main(String[] args) {
+        ChessBoard board1 = new ChessBoard();
+        board1.resetBoard();
+        System.out.print(board1);
     }
 }
