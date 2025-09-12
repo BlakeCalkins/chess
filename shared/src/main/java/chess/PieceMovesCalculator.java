@@ -5,8 +5,8 @@ import java.util.Collection;
 
 public class PieceMovesCalculator {
 
-    private final ChessBoard board;
-    private final ChessPosition currPosition;
+    public final ChessBoard board;
+    public final ChessPosition currPosition;
     Collection<ChessMove> moveCollection;
     int currRow;
     int currCol;
