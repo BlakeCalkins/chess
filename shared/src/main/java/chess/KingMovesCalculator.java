@@ -19,9 +19,6 @@ public class KingMovesCalculator extends PieceMovesCalculator {
                 if (board.getPiece(newPosition) == null || board.getPiece(newPosition).getTeamColor() == enemyColor) {
                     ChessMove move = new ChessMove(currPosition, newPosition, null);
                     moveCollection.add(move);
-                    if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                        break;
-                    }
                 }
             }
 
