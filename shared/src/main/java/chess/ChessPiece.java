@@ -1,7 +1,6 @@
 package chess;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
 
 /**
@@ -55,12 +54,12 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         return switch (type) {
-            case KING -> null;
-            case QUEEN -> null;
-            case BISHOP -> null;
-            case KNIGHT -> null;
+            case KING -> new KingMovesCalculator(board, myPosition).pieceMoves();
+            case QUEEN -> new QueenMovesCalculator(board, myPosition).pieceMoves();
+            case BISHOP -> new BishopMovesCalculator(board, myPosition).pieceMoves();
+            case KNIGHT -> new KnightMovesCalculator(board, myPosition).pieceMoves();
             case ROOK -> new RookMovesCalculator(board, myPosition).pieceMoves();
-            case PAWN -> null;
+            case PAWN -> new PawnMovesCalculator(board, myPosition).pieceMoves();
         };
     }
 
