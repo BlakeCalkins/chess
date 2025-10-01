@@ -119,6 +119,15 @@ public class ChessGame {
         return moves;
     }
 
+    public boolean noValids(TeamColor teamColor) {
+        Collection<ChessMove> moves = findMoves(teamColor, board);
+        for (ChessMove move: moves) {
+            if (!validMoves(move.getStartPosition()).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 
     /**
@@ -158,13 +167,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        Collection<ChessMove> moves = findMoves(teamColor, board);
-        for (ChessMove move: moves) {
-            if (!validMoves(move.getStartPosition()).isEmpty()) {
-                return false;
-            }
-        }
-        return isInCheck(teamColor);
+        return isInCheck(teamColor) && noValids(teamColor);
     }
 
     /**
@@ -175,13 +178,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        Collection<ChessMove> moves = findMoves(teamColor, board);
-        for (ChessMove move: moves) {
-            if (!validMoves(move.getStartPosition()).isEmpty()) {
-                return false;
-            }
-        }
-        return !isInCheck(teamColor);
+        return !isInCheck(teamColor) && noValids(teamColor);
     }
 
     /**
