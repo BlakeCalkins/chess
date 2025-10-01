@@ -44,6 +44,9 @@ public class ChessBoard implements Cloneable {
 
     public void movePiece(ChessMove move, ChessPiece piece) {
         removePiece(move.getStartPosition());
+        if (getPiece(move.getEndPosition()) != null) {
+            removePiece(move.getEndPosition());
+        }
         addPiece(move.getEndPosition(), piece);
     }
 
@@ -105,13 +108,15 @@ public class ChessBoard implements Cloneable {
         for (ChessPiece[] row : board) {
             for (ChessPiece piece : row) {
                 if (piece != null) {
-                    str.append(piece);
+                    str.append("|");
+                    str.append(piece.getPieceType());
+                } else {
+                    str.append("|     ");
                 }
             }
+            str.append("\n");
         }
-        return "ChessBoard{" +
-                "board=" + str +
-                '}';
+        return "Board: \n" + str +"\n";
     }
 
     @Override
