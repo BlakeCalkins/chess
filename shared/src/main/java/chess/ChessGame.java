@@ -3,6 +3,7 @@ package chess;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Objects;
 
 /**
@@ -66,7 +67,7 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
-    public ChessPosition findKing(ChessBoard board, TeamColor teamColor) {
+    public ChessPosition findKing(TeamColor teamColor) {
         for (int row = 1; row < 9; row++) {
             for (int col = 1; col < 9; col++) {
                 ChessPosition pos = new ChessPosition(row, col);
@@ -78,8 +79,8 @@ public class ChessGame {
         return null;
     }
 
-    public Collection<ChessMove> findMoves(ChessBoard board, TeamColor teamColor) {
-        Collection<ChessMove> moves = new ArrayList<ChessMove>();
+    public Collection<ChessMove> findMoves(TeamColor teamColor) {
+        Collection<ChessMove> moves = new ArrayList<>();
         for (int row = 1; row < 9; row++) {
             for (int col = 1; col < 9; col++) {
                 ChessPosition pos = new ChessPosition(row, col);
@@ -91,6 +92,47 @@ public class ChessGame {
         return moves;
     }
 
+    public boolean kingCantMove(TeamColor teamColor) {
+        ChessPosition kingPosition = findKing(teamColor);
+//        int kRow = kingPosition.getRow();
+//        int kCol = kingPosition.getColumn();
+        Collection<ChessMove> enemyMoves = findMoves(teamColor);
+        Collection<ChessMove> kingMoves = board.getPiece(kingPosition).pieceMoves(board, kingPosition);
+        Iterator<ChessMove> it = kingMoves.iterator();
+        while (it.hasNext()) {
+            ChessMove kMove = it.next();
+            for (ChessMove eMove : enemyMoves) {
+                if (eMove.getEndPosition().equals(kMove.getEndPosition())) {
+                    it.remove();
+                    break;
+                }
+            }
+        }
+//        for (ChessMove kMove: kingMoves) {
+//            for (ChessMove eMove: enemyMoves) {
+//                if (eMove.getEndPosition().equals(kMove.getEndPosition()))
+//                    kingMoves.remove(kMove);
+//            }
+//        }
+//        for (int row = kRow-1; row <= kRow+1; row++) {
+//            for (int col = kCol-1; col <= kCol+1; col++) {
+//                if (row < 1 || col < 1 || row > 8 || col > 8) {
+//                    continue;
+//                }
+//                ChessPosition pos = new ChessPosition(row, col);
+//                if (kingMoves.contains(new ChessMove(kingPosition, pos, null))){
+//                    for (ChessMove move: enemyMoves) {
+//                        if (move.getEndPosition().equals(pos)) {
+//                            kingMoves.removeIf(m -> m.getEndPosition().equals(pos));
+//                        }
+//                    }
+//                }
+//            }
+//        }
+        System.out.println("King moves after pruning: " + kingMoves);
+        return kingMoves.isEmpty();
+    }
+
     /**
      * Determines if the given team is in check
      *
@@ -98,14 +140,11 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        ChessPosition kingPosition = findKing(board, teamColor);
-        Collection<ChessMove> enemyMoves = findMoves(board, teamColor);
-        for (int row = 1; row < 9; row++) {
-            for (int col = 1; col < 9; col++) {
-                ChessPosition pos = new ChessPosition(row, col);
-                if (enemyMoves.contains(new ChessMove(pos, kingPosition, null))) {
-                    return true;
-                }
+        ChessPosition kingPosition = findKing(teamColor);
+        Collection<ChessMove> enemyMoves = findMoves(teamColor);
+        for (ChessMove move: enemyMoves) {
+            if (move.getEndPosition().equals(kingPosition)) {
+                return true;
             }
         }
         return false;
@@ -118,7 +157,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return isInCheck(teamColor) && kingCantMove(teamColor);
     }
 
     /**
