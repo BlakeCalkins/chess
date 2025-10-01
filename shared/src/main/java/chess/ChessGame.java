@@ -63,10 +63,9 @@ public class ChessGame {
         Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
         for (ChessMove move: moves) {
             ChessBoard cloned = makeMoveOnClone(move);
-            if (isInCheck(piece.getTeamColor(), cloned)) {
-                continue;
+            if (!isInCheck(piece.getTeamColor(), cloned)) {
+                valids.add(move);
             }
-            valids.add(move);
         }
         return valids;
     }
@@ -78,7 +77,15 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        if (validMoves(move.getEndPosition()).contains(move)) {
+            board.movePiece(move, board.getPiece(move.getStartPosition()));
+            if (getTeamTurn() == TeamColor.WHITE) {
+                setTeamTurn(TeamColor.BLACK);
+            } else {
+                setTeamTurn(TeamColor.WHITE);
+            }
+        } else
+            throw new InvalidMoveException("Illegal Move");
     }
 
     public ChessBoard makeMoveOnClone(ChessMove move) {
@@ -92,7 +99,7 @@ public class ChessGame {
         for (int row = 1; row < 9; row++) {
             for (int col = 1; col < 9; col++) {
                 ChessPosition pos = new ChessPosition(row, col);
-                if (board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == teamColor) {
+                if (board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == teamColor && board.getPiece(pos).getPieceType() == ChessPiece.PieceType.KING) {
                     return pos;
                 }
             }
