@@ -76,15 +76,18 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        if (validMoves(move.getEndPosition()).contains(move)) {
-            board.movePiece(move, board.getPiece(move.getStartPosition()));
-            if (getTeamTurn() == TeamColor.WHITE) {
-                setTeamTurn(TeamColor.BLACK);
-            } else {
-                setTeamTurn(TeamColor.WHITE);
-            }
-        } else
+        if (board.getPiece(move.getStartPosition()) == null)
+            throw new InvalidMoveException("No piece here.");
+        if (board.getPiece(move.getStartPosition()).getTeamColor() != teamColor)
+            throw new InvalidMoveException("Not your turn");
+        if (!validMoves(move.getStartPosition()).contains(move))
             throw new InvalidMoveException("Illegal Move");
+        board.movePiece(move, board.getPiece(move.getStartPosition()));
+        if (getTeamTurn() == TeamColor.WHITE) {
+            setTeamTurn(TeamColor.BLACK);
+        } else {
+            setTeamTurn(TeamColor.WHITE);
+        }
     }
 
     public ChessBoard makeMoveOnClone(ChessMove move) {
