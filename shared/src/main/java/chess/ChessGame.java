@@ -87,9 +87,11 @@ public class ChessGame {
         for (int row = 1; row < 9; row++) {
             for (int col = 1; col < 9; col++) {
                 ChessPosition pos = new ChessPosition(row, col);
+                ChessPosition kingPosition = findKing(board, teamColor);
                 if (board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() != teamColor) {
-                    return false;
-//                    if ()
+                    if (board.getPiece(pos).pieceMoves(board, pos).contains(new ChessMove(pos, kingPosition, null))) {
+                        return true;
+                    }
                 }
             }
         }
