@@ -1,5 +1,6 @@
 package chess;
 
+import javax.swing.*;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -64,6 +65,18 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
+    public ChessPosition findKing(ChessBoard board, TeamColor teamColor) {
+        for (int row = 1; row < 9; row++) {
+            for (int col = 1; col < 9; col++) {
+                ChessPosition pos = new ChessPosition(row, col);
+                if (board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == teamColor) {
+                    return pos;
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Determines if the given team is in check
      *
@@ -71,7 +84,16 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        for (int row = 1; row < 9; row++) {
+            for (int col = 1; col < 9; col++) {
+                ChessPosition pos = new ChessPosition(row, col);
+                if (board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() != teamColor) {
+                    return false;
+//                    if ()
+                }
+            }
+        }
+        return false;
     }
 
     /**
