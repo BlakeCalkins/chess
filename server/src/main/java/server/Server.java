@@ -1,34 +1,41 @@
 package server;
 
 import com.google.gson.Gson;
+import datamodel.*;
 import io.javalin.*;
 import io.javalin.http.Context;
+import org.eclipse.jetty.server.Authentication;
+import service.UserService;
 
 import java.util.Map;
 
 public class Server {
 
     private final Javalin server;
+    private final UserService userService;
+
 
     public Server() {
+        userService = new UserService();
         server = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register your endpoints and exception handlers here.
         server.delete("db", ctx -> ctx.result("{}"));
-        server.post("user", ctx -> register(ctx));
+        server.post("user", this::register);
+
 
     }
 
     private void register(Context ctx) {
         var serializer = new Gson();
         String requestJson = ctx.body();
-        var req = serializer.fromJson(requestJson, Map.class);
+        var user = serializer.fromJson(requestJson, UserData.class);
 
         // call to the service and register
 
-        // fake
-        var res = Map.of("username", req.get("username"), "authToken", "verysecurexxx69");
-        ctx.result(serializer.toJson(res));
+        var authData = userService.register(user);
+
+        ctx.result(serializer.toJson(authData));
     }
 
     public int run(int desiredPort) {
