@@ -3,10 +3,10 @@ package service;
 import dataaccess.DataAccess;
 import datamodel.*;
 
-public class UserService {
+public class Service {
     private final DataAccess dataAccess;
 
-    public UserService(DataAccess dataAccess) {
+    public Service(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
 

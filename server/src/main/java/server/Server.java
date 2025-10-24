@@ -7,17 +7,17 @@ import io.javalin.*;
 import io.javalin.http.Context;
 import service.AlreadyTakenException;
 import service.BadRequestException;
-import service.UserService;
+import service.Service;
 
 public class Server {
 
     private final Javalin server;
-    private final UserService userService;
+    private final Service userService;
 
 
     public Server() {
         var dataAccess = new MemoryUserDataAccess();
-        userService = new UserService(dataAccess);
+        userService = new Service(dataAccess);
         server = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register your endpoints and exception handlers here.
