@@ -1,14 +1,13 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.MemoryDataAccess;
+import dataaccess.MemoryUserDataAccess;
 import datamodel.*;
 import io.javalin.*;
 import io.javalin.http.Context;
-import org.eclipse.jetty.server.Authentication;
+import service.AlreadyTakenException;
+import service.BadRequestException;
 import service.UserService;
-
-import java.util.Map;
 
 public class Server {
 
@@ -17,7 +16,7 @@ public class Server {
 
 
     public Server() {
-        var dataAccess = new MemoryDataAccess();
+        var dataAccess = new MemoryUserDataAccess();
         userService = new UserService(dataAccess);
         server = Javalin.create(config -> config.staticFiles.add("web"));
 
@@ -39,9 +38,13 @@ public class Server {
             var authData = userService.register(user);
 
             ctx.result(serializer.toJson(authData));
+        } catch (BadRequestException e) {
+            ctx.status(e.getCode()).result(e.getMessage());
+        } catch (AlreadyTakenException e) {
+            ctx.status(e.getCode()).result(e.getMessage());
         } catch (Exception e) {
-            var msg = "{\"message\": \"Error: already taken\"}";
-            ctx.status(403).result(msg); // stub
+            var msg = "{\"message\": \"Error: 500\"}";
+            ctx.status(500).result(msg);
         }
     }
 

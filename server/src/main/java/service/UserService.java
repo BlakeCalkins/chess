@@ -12,10 +12,10 @@ public class UserService {
 
     public AuthData register(UserData user) throws Exception{
         if ((user.email() == null) || (user.password() == null) || (user.username() == null)) {
-            throw new Exception("bad request");
+            throw new BadRequestException("bad request");
         }
         if (dataAccess.getUser(user.username()) != null) {
-            throw new Exception("already exists"); // Check petshop for better exception
+            throw new AlreadyTakenException("already exists");
         }
         dataAccess.createUser(user);
         return new AuthData(user.username(), generateAuthToken());
