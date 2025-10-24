@@ -20,14 +20,21 @@ class UserServiceTest {
         assertFalse(authData.authToken().isEmpty());
     }
 
-    // not correct yet
     @Test
     void registerInvalidUsername() throws Exception {
         DataAccess db = new MemoryDataAccess();
         var user = new UserData(null, "j@j.com", "pswd");
         var userService = new UserService(db);
-        var authData = userService.register(user);
-        // change these
-        assertNull(authData);
+        assertThrows(Exception.class, () -> userService.register(user));
+    }
+
+    @Test
+    void registerDuplicateUsername() throws Exception {
+        DataAccess db = new MemoryDataAccess();
+        var user = new UserData("Blake", "blake@cool.com", "pswd");
+        var user2 = new UserData("Blake", "blake@yahoo.com", "password");
+        var userService = new UserService(db);
+        userService.register(user);
+        assertThrows(Exception.class, () -> userService.register(user2));
     }
 }
