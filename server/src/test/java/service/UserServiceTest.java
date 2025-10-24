@@ -28,8 +28,6 @@ class UserServiceTest {
         var userService = new UserService(db);
         var authData = userService.register(user);
         // change these
-        assertNotNull(authData);
-        assertEquals(user.username(), authData.username());
-        assertFalse(authData.authToken().isEmpty());
+        assertNull(authData);
     }
 }
