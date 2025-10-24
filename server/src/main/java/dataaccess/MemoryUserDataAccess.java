@@ -2,11 +2,10 @@ package dataaccess;
 
 import datamodel.UserData;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class MemoryDataAccess implements DataAccess {
+public class MemoryUserDataAccess implements DataAccess {
     private final HashMap<String, UserData> users = new HashMap<>();
 
     @Override

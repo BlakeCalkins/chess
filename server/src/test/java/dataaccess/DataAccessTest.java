@@ -11,7 +11,7 @@ class DataAccessTest {
 
     @Test
     void clear() {
-        DataAccess db = new MemoryDataAccess();
+        DataAccess db = new MemoryUserDataAccess();
         db.createUser(new UserData("joe", "j@j.com", "pswd"));
         db.clear();
         assertNull(db.getUser("joe"));
@@ -19,7 +19,7 @@ class DataAccessTest {
 
     @Test
     void createUser() {
-        DataAccess db = new MemoryDataAccess();
+        DataAccess db = new MemoryUserDataAccess();
         var user = new UserData("joe", "j@j.com", "pswd");
         db.createUser(user);
         assertEquals(user, db.getUser(user.username()));
