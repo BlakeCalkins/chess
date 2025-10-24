@@ -18,6 +18,16 @@ public class UserService {
         return new AuthData(user.username(), generateAuthToken());
     }
 
+    public AuthData login(UserData user) throws Exception {
+        if (dataAccess.getUser(user.username()) == null) {
+            throw new Exception("no user exists.");
+        }
+        if (!dataAccess.validPassword(user)) {
+            throw new Exception("unauthorized");
+        }
+        return new AuthData(user.username(), generateAuthToken());
+    }
+
     // stub
     private String generateAuthToken() {
         return "xyz";
