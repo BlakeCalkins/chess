@@ -1,31 +1,31 @@
 package service;
 
-import dataaccess.DataAccess;
+import dataaccess.UserDataAccess;
 import datamodel.*;
 
 public class Service {
-    private final DataAccess dataAccess;
+    private final UserDataAccess userDataAccess;
 
-    public Service(DataAccess dataAccess) {
-        this.dataAccess = dataAccess;
+    public Service(UserDataAccess userDataAccess) {
+        this.userDataAccess = userDataAccess;
     }
 
     public AuthData register(UserData user) throws Exception{
         if ((user.email() == null) || (user.password() == null) || (user.username() == null)) {
             throw new BadRequestException("bad request");
         }
-        if (dataAccess.getUser(user.username()) != null) {
+        if (userDataAccess.getUser(user.username()) != null) {
             throw new AlreadyTakenException("already exists");
         }
-        dataAccess.createUser(user);
+        userDataAccess.createUser(user);
         return new AuthData(user.username(), generateAuthToken());
     }
 
     public AuthData login(UserData user) throws Exception {
-        if (dataAccess.getUser(user.username()) == null) {
+        if (userDataAccess.getUser(user.username()) == null) {
             throw new Exception("no user exists.");
         }
-        if (!dataAccess.validPassword(user)) {
+        if (!userDataAccess.validPassword(user)) {
             throw new Exception("unauthorized");
         }
         return new AuthData(user.username(), generateAuthToken());

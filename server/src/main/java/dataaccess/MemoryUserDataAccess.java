@@ -5,7 +5,7 @@ import datamodel.UserData;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class MemoryUserDataAccess implements DataAccess {
+public class MemoryUserDataAccess implements UserDataAccess {
     private final HashMap<String, UserData> users = new HashMap<>();
 
     @Override
