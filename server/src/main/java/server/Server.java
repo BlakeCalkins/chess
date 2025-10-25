@@ -8,6 +8,7 @@ import io.javalin.http.Context;
 import service.AlreadyTakenException;
 import service.BadRequestException;
 import service.Service;
+import service.UnauthorizedException;
 
 public class Server {
 
@@ -23,6 +24,7 @@ public class Server {
         // Register your endpoints and exception handlers here.
         server.delete("db", ctx -> ctx.result("{}")); // stub, call to service to call clear
         server.post("user", this::register);
+        server.post("session", this::login);
 
 
     }
@@ -41,6 +43,25 @@ public class Server {
         } catch (BadRequestException e) {
             ctx.status(e.getCode()).result(e.getMessage());
         } catch (AlreadyTakenException e) {
+            ctx.status(e.getCode()).result(e.getMessage());
+        } catch (Exception e) {
+            var msg = "{\"message\": \"Error: 500\"}";
+            ctx.status(500).result(msg);
+        }
+    }
+
+    private void login(Context ctx) {
+        try {
+            var serializer = new Gson();
+            String requestJson = ctx.body();
+            var user = serializer.fromJson(requestJson, UserData.class);
+
+            var authData = userService.login(user);
+            ctx.result(serializer.toJson(authData));
+
+        } catch (BadRequestException e) {
+            ctx.status(e.getCode()).result(e.getMessage());
+        } catch (UnauthorizedException e) {
             ctx.status(e.getCode()).result(e.getMessage());
         } catch (Exception e) {
             var msg = "{\"message\": \"Error: 500\"}";

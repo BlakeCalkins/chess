@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.UserDataAccess;
 import datamodel.*;
 
@@ -22,12 +23,19 @@ public class Service {
     }
 
     public AuthData login(UserData user) throws Exception {
+//        if (user.username() == null || user.email() == null || user.password() == null) {
+//            throw new BadRequestException("bad request");
+//        }
+        if (user.username() == null) {
+            throw new BadRequestException("bad request");
+        }
         if (userDataAccess.getUser(user.username()) == null) {
-            throw new Exception("no user exists.");
+            throw new UnauthorizedException("no user exists.");
         }
         if (!userDataAccess.validPassword(user)) {
-            throw new Exception("unauthorized");
+            throw new BadRequestException("unauthorized");
         }
+
         return new AuthData(user.username(), generateAuthToken());
     }
 
