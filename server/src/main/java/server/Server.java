@@ -30,11 +30,12 @@ public class Server {
         server = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register your endpoints and exception handlers here.
-        server.delete("db", this::clear); // stub, call to service to call clear
+        server.delete("db", this::clear);
         server.post("user", this::register);
         server.post("session", this::login);
         server.delete("session", this::logout);
         server.get("game", this::listGames);
+        server.post("game", this::createGame);
 
 
     }
@@ -121,6 +122,29 @@ public class Server {
             ctx.status(500).result(msg);
         }
 
+    }
+
+    private void createGame(Context ctx) {
+        try {
+            var serializer = new Gson();
+            var auth = ctx.header("authorization");
+            String requestJson = ctx.body();
+            var gameData = serializer.fromJson(requestJson, GameData.class);
+
+            int gameID = service.createGame(gameData, auth);
+            Map<String, Object> response = new HashMap<>();
+            response.put("gameID", gameID);
+            ctx.status(200).result(serializer.toJson(response));
+
+
+        } catch (BadRequestException e) {
+            ctx.status(e.getCode()).result(e.getMessage());
+        } catch (UnauthorizedException e) {
+            ctx.status(e.getCode()).result(e.getMessage());
+        } catch (Exception e) {
+            var msg = "{\"message\": \"Error: 500\"}";
+            ctx.status(500).result(msg);
+        }
     }
 
     public int run(int desiredPort) {

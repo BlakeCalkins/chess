@@ -22,6 +22,7 @@ public class Service {
     public void clear() {
         userDataAccess.clear();
         authDataAccess.clear();
+        gameDataAccess.clear();
     }
 
     public AuthData register(UserData user) throws Exception{
@@ -66,8 +67,15 @@ public class Service {
         return gameDataAccess.listGames();
     }
 
-    // stub
-
+    public int createGame(GameData gameData, String authToken) throws Exception {
+        if (gameData.gameName() == null) {
+            throw new BadRequestException("bad request");
+        }
+        if (!authDataAccess.verifyAuth(authToken)) {
+            throw new UnauthorizedException("unauthorized");
+        }
+        return gameDataAccess.createGame(gameData);
+    }
 
     public String generateAuthToken() {
         String authToken = UUID.randomUUID().toString();

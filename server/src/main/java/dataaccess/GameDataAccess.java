@@ -7,4 +7,5 @@ import java.util.List;
 public interface GameDataAccess {
     void clear();
     List<GameData> listGames();
+    Integer createGame(GameData gameData);
 }
