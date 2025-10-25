@@ -1,17 +1,22 @@
 package service;
 
 import dataaccess.AuthDataAccess;
+import dataaccess.GameDataAccess;
 import dataaccess.UserDataAccess;
 import datamodel.*;
+
+import java.util.List;
 import java.util.UUID;
 
 public class Service {
     private final UserDataAccess userDataAccess;
     private final AuthDataAccess authDataAccess;
+    private final GameDataAccess gameDataAccess;
 
-    public Service(UserDataAccess userDataAccess, AuthDataAccess authDataAccess) {
+    public Service(UserDataAccess userDataAccess, AuthDataAccess authDataAccess, GameDataAccess gameDataAccess) {
         this.userDataAccess = userDataAccess;
         this.authDataAccess = authDataAccess;
+        this.gameDataAccess = gameDataAccess;
     }
 
     public void clear() {
@@ -52,6 +57,13 @@ public class Service {
             throw new UnauthorizedException("unauthorized");
         }
         authDataAccess.deleteAuth(authToken);
+    }
+
+    public List<GameData> listGames(String authToken) throws UnauthorizedException {
+        if (!authDataAccess.verifyAuth(authToken)) {
+            throw new UnauthorizedException("unauthorized");
+        }
+        return gameDataAccess.listGames();
     }
 
     // stub

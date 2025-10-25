@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.MemoryAuthDataAccess;
+import dataaccess.MemoryGameDataAccess;
 import dataaccess.MemoryUserDataAccess;
 import datamodel.*;
 import io.javalin.*;
@@ -10,6 +11,10 @@ import service.AlreadyTakenException;
 import service.BadRequestException;
 import service.Service;
 import service.UnauthorizedException;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Server {
 
@@ -20,7 +25,8 @@ public class Server {
     public Server() {
         var userDataAccess = new MemoryUserDataAccess();
         var authDataAccess = new MemoryAuthDataAccess();
-        service = new Service(userDataAccess, authDataAccess);
+        var gameDataAccess = new MemoryGameDataAccess();
+        service = new Service(userDataAccess, authDataAccess, gameDataAccess);
         server = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register your endpoints and exception handlers here.
@@ -28,6 +34,7 @@ public class Server {
         server.post("user", this::register);
         server.post("session", this::login);
         server.delete("session", this::logout);
+        server.get("game", this::listGames);
 
 
     }
@@ -96,6 +103,24 @@ public class Server {
             var msg = "{\"message\": \"Error: 500\"}";
             ctx.status(500).result(msg);
         }
+    }
+
+    private void listGames(Context ctx) {
+        try {
+            var serializer = new Gson();
+            var auth = ctx.header("authorization");
+
+            List<GameData> games = service.listGames(auth);
+            Map<String, Object> response = new HashMap<>();
+            response.put("games", games);
+            ctx.status(200).result(serializer.toJson(response));
+        }  catch (UnauthorizedException e) {
+            ctx.status(e.getCode()).result(e.getMessage());
+        } catch (Exception e) {
+            var msg = "{\"message\": \"Error: 500\"}";
+            ctx.status(500).result(msg);
+        }
+
     }
 
     public int run(int desiredPort) {

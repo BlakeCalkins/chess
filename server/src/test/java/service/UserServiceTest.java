@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.AuthDataAccess;
-import dataaccess.MemoryAuthDataAccess;
-import dataaccess.UserDataAccess;
-import dataaccess.MemoryUserDataAccess;
+import dataaccess.*;
 import datamodel.UserData;
 import org.junit.jupiter.api.Test;
 
@@ -15,8 +12,9 @@ class UserServiceTest {
     void register() throws Exception {
         UserDataAccess userDAO = new MemoryUserDataAccess();
         AuthDataAccess authDAO = new MemoryAuthDataAccess();
+        GameDataAccess gameDAO = new MemoryGameDataAccess();
         var user = new UserData("joe", "j@j.com", "pswd");
-        var userService = new Service(userDAO, authDAO);
+        var userService = new Service(userDAO, authDAO, gameDAO);
         var authData = userService.register(user);
         assertNotNull(authData);
         assertEquals(user.username(), authData.username());
@@ -27,8 +25,9 @@ class UserServiceTest {
     void registerInvalidUsername() throws Exception {
         UserDataAccess userDAO = new MemoryUserDataAccess();
         AuthDataAccess authDAO = new MemoryAuthDataAccess();
+        GameDataAccess gameDAO = new MemoryGameDataAccess();
         var user = new UserData(null, "j@j.com", "pswd");
-        var userService = new Service(userDAO, authDAO);
+        var userService = new Service(userDAO, authDAO, gameDAO);
         assertThrows(Exception.class, () -> userService.register(user));
     }
 
@@ -36,9 +35,10 @@ class UserServiceTest {
     void registerDuplicateUsername() throws Exception {
         UserDataAccess userDAO = new MemoryUserDataAccess();
         AuthDataAccess authDAO = new MemoryAuthDataAccess();
+        GameDataAccess gameDAO = new MemoryGameDataAccess();
         var user = new UserData("Blake", "blake@cool.com", "pswd");
         var user2 = new UserData("Blake", "blake@yahoo.com", "password");
-        var userService = new Service(userDAO, authDAO);
+        var userService = new Service(userDAO, authDAO, gameDAO);
         userService.register(user);
         assertThrows(Exception.class, () -> userService.register(user2));
     }
