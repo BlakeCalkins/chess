@@ -8,6 +8,11 @@ public class MemoryAuthDataAccess implements AuthDataAccess {
     private final Set<String> authTokens = new HashSet<>();
 
     @Override
+    public void clear() {
+        authTokens.clear();
+    }
+
+    @Override
     public Boolean verifyAuth(String authToken) {
         return authTokens.contains(authToken);
     }

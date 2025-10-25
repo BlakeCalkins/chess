@@ -14,6 +14,11 @@ public class Service {
         this.authDataAccess = authDataAccess;
     }
 
+    public void clear() {
+        userDataAccess.clear();
+        authDataAccess.clear();
+    }
+
     public AuthData register(UserData user) throws Exception{
         if ((user.email() == null) || (user.password() == null) || (user.username() == null)) {
             throw new BadRequestException("bad request");
