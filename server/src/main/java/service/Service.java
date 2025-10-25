@@ -29,14 +29,14 @@ public class Service {
 //        if (user.username() == null || user.email() == null || user.password() == null) {
 //            throw new BadRequestException("bad request");
 //        }
-        if (user.username() == null) {
+        if (user.username() == null || user.password() == null) {
             throw new BadRequestException("bad request");
         }
         if (userDataAccess.getUser(user.username()) == null) {
             throw new UnauthorizedException("no user exists.");
         }
         if (!userDataAccess.validPassword(user)) {
-            throw new BadRequestException("unauthorized");
+            throw new UnauthorizedException("unauthorized");
         }
 
         return new AuthData(user.username(), generateAuthToken());
