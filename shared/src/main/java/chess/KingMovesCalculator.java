@@ -15,7 +15,8 @@ public class KingMovesCalculator extends PieceMovesCalculator {
                 if (outOfBounds(i, j) || isPiecePosition(i, j)) {
                     continue;
                 }
-                addIfEmptyOrEnemy(i, j);
+                ChessPosition newPosition = new ChessPosition(i, j);
+                addIfEmptyOrEnemy(newPosition);
             }
 
         }

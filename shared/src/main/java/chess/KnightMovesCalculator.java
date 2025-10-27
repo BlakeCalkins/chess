@@ -15,7 +15,8 @@ public class KnightMovesCalculator extends PieceMovesCalculator {
                 if (outOfBounds(i, j) || isPiecePosition(i, j)) {
                     continue;
                 }
-                addIfEmptyOrEnemy(i, j);
+                ChessPosition newPosition = new ChessPosition(i, j);
+                addIfEmptyOrEnemy(newPosition);
             }
         }
         for (int i = currRow - 1; i <= currRow + 1; i += 2) {
@@ -23,7 +24,8 @@ public class KnightMovesCalculator extends PieceMovesCalculator {
                 if (outOfBounds(i, j) || isPiecePosition(i, j)) {
                     continue;
                 }
-                addIfEmptyOrEnemy(i, j);
+                ChessPosition newPosition = new ChessPosition(i, j);
+                addIfEmptyOrEnemy(newPosition);
             }
         }
         return moveCollection;

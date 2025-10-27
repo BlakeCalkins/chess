@@ -46,13 +46,8 @@ public class PieceMovesCalculator {
         while (row > 1) {
             row--;
             ChessPosition newPosition = new ChessPosition(row, currCol);
-            if (board.getPiece(newPosition) == null || board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                ChessMove move = new ChessMove(currPosition, newPosition, null);
-                moveCollection.add(move);
-                if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                    break;
-                }
-            } else {
+            addIfEmptyOrEnemy(newPosition);
+            if (board.getPiece(newPosition) != null) {
                 break;
             }
         }
@@ -60,13 +55,8 @@ public class PieceMovesCalculator {
         while (col < 8) {
             col++;
             ChessPosition newPosition = new ChessPosition(currRow, col);
-            if (board.getPiece(newPosition) == null || board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                ChessMove move = new ChessMove(currPosition, newPosition, null);
-                moveCollection.add(move);
-                if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                    break;
-                }
-            } else {
+            addIfEmptyOrEnemy(newPosition);
+            if (board.getPiece(newPosition) != null) {
                 break;
             }
         }
@@ -74,13 +64,8 @@ public class PieceMovesCalculator {
         while (col > 1) {
             col--;
             ChessPosition newPosition = new ChessPosition(currRow, col);
-            if (board.getPiece(newPosition) == null || board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                ChessMove move = new ChessMove(currPosition, newPosition, null);
-                moveCollection.add(move);
-                if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                    break;
-                }
-            } else {
+            addIfEmptyOrEnemy(newPosition);
+            if (board.getPiece(newPosition) != null) {
                 break;
             }
         }
@@ -94,13 +79,8 @@ public class PieceMovesCalculator {
             row++;
             col++;
             ChessPosition newPosition = new ChessPosition(row, col);
-            if (board.getPiece(newPosition) == null || board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                ChessMove move = new ChessMove(currPosition, newPosition, null);
-                moveCollection.add(move);
-                if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                    break;
-                }
-            } else  {
+            addIfEmptyOrEnemy(newPosition);
+            if (board.getPiece(newPosition) != null) {
                 break;
             }
         }
@@ -110,13 +90,8 @@ public class PieceMovesCalculator {
             row--;
             col--;
             ChessPosition newPosition = new ChessPosition(row, col);
-            if (board.getPiece(newPosition) == null || board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                ChessMove move = new ChessMove(currPosition, newPosition, null);
-                moveCollection.add(move);
-                if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                    break;
-                }
-            } else  {
+            addIfEmptyOrEnemy(newPosition);
+            if (board.getPiece(newPosition) != null) {
                 break;
             }
         }
@@ -126,13 +101,8 @@ public class PieceMovesCalculator {
             row++;
             col--;
             ChessPosition newPosition = new ChessPosition(row, col);
-            if (board.getPiece(newPosition) == null || board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                ChessMove move = new ChessMove(currPosition, newPosition, null);
-                moveCollection.add(move);
-                if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                    break;
-                }
-            } else  {
+            addIfEmptyOrEnemy(newPosition);
+            if (board.getPiece(newPosition) != null) {
                 break;
             }
         }
@@ -142,13 +112,8 @@ public class PieceMovesCalculator {
             row--;
             col++;
             ChessPosition newPosition = new ChessPosition(row, col);
-            if (board.getPiece(newPosition) == null || board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                ChessMove move = new ChessMove(currPosition, newPosition, null);
-                moveCollection.add(move);
-                if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() == enemyColor) {
-                    break;
-                }
-            } else  {
+            addIfEmptyOrEnemy(newPosition);
+            if (board.getPiece(newPosition) != null) {
                 break;
             }
         }
@@ -167,8 +132,7 @@ public class PieceMovesCalculator {
         return i == currRow && j == currCol;
     }
 
-    public void addIfEmptyOrEnemy(int i, int j) {
-        ChessPosition newPosition = new ChessPosition(i, j);
+    public void addIfEmptyOrEnemy(ChessPosition newPosition) {
         if (board.getPiece(newPosition) == null || board.getPiece(newPosition).getTeamColor() == enemyColor) {
             ChessMove move = new ChessMove(currPosition, newPosition, null);
             moveCollection.add(move);
