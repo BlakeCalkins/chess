@@ -33,13 +33,10 @@ public class Service {
             throw new AlreadyTakenException("already exists");
         }
         userDataAccess.createUser(user);
-        return new AuthData(user.username(), generateAuthToken());
+        return new AuthData(user.username(), generateAuthToken(user.username()));
     }
 
     public AuthData login(UserData user) throws Exception {
-//        if (user.username() == null || user.email() == null || user.password() == null) {
-//            throw new BadRequestException("bad request");
-//        }
         if (user.username() == null || user.password() == null) {
             throw new BadRequestException("bad request");
         }
@@ -50,7 +47,7 @@ public class Service {
             throw new UnauthorizedException("unauthorized");
         }
 
-        return new AuthData(user.username(), generateAuthToken());
+        return new AuthData(user.username(), generateAuthToken(user.username()));
     }
 
     public void logout(String authToken) throws Exception {
@@ -77,9 +74,30 @@ public class Service {
         return gameDataAccess.createGame(gameData);
     }
 
-    public String generateAuthToken() {
+    public void joinGame(String playerColor, Integer gameID, String authToken) throws Exception {
+        if (!authDataAccess.verifyAuth(authToken)) {
+            throw new UnauthorizedException("unauthorized");
+        }
+        if (playerColor == null || gameID == null || playerColor.isEmpty()) {
+            throw new BadRequestException("bad request.");
+        }
+        if (!playerColor.equals("WHITE") && !playerColor.equals("BLACK")) {
+            throw new BadRequestException("bad request");
+        }
+        if (gameDataAccess.getGame(gameID) == null) {
+            throw new BadRequestException("you must create a game first");
+        }
+        if ((gameDataAccess.getGame(gameID).whiteUsername() != null && playerColor.equals("WHITE")) ||
+                (gameDataAccess.getGame(gameID).blackUsername() != null && playerColor.equals("BLACK"))) {
+            throw new AlreadyTakenException("already taken.");
+        }
+        String username = authDataAccess.getAuth(authToken).username();
+        gameDataAccess.joinGame(gameID, username, playerColor);
+    }
+
+    public String generateAuthToken(String username) {
         String authToken = UUID.randomUUID().toString();
-        this.authDataAccess.add(authToken);
+        this.authDataAccess.add(authToken, username);
         return authToken;
     }
 }

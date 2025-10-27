@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import dataaccess.MemoryAuthDataAccess;
 import dataaccess.MemoryGameDataAccess;
 import dataaccess.MemoryUserDataAccess;
@@ -36,6 +37,7 @@ public class Server {
         server.delete("session", this::logout);
         server.get("game", this::listGames);
         server.post("game", this::createGame);
+        server.put("game", this::joinGame);
 
 
     }
@@ -45,7 +47,7 @@ public class Server {
             service.clear();
             ctx.status(200).result("{}");
         } catch (Exception e) {
-            var msg = "{\"message\": \"Error: 500\"}";
+            var msg = "{\"message\": \"Error: " + e.getMessage() + "\"}";
             ctx.status(500).result(msg);
         }
     }
@@ -66,7 +68,7 @@ public class Server {
         } catch (AlreadyTakenException e) {
             ctx.status(e.getCode()).result(e.getMessage());
         } catch (Exception e) {
-            var msg = "{\"message\": \"Error: 500\"}";
+            var msg = "{\"message\": \"Error: " + e.getMessage() + "\"}";
             ctx.status(500).result(msg);
         }
     }
@@ -85,7 +87,7 @@ public class Server {
         } catch (UnauthorizedException e) {
             ctx.status(e.getCode()).result(e.getMessage());
         } catch (Exception e) {
-            var msg = "{\"message\": \"Error: 500\"}";
+            var msg = "{\"message\": \"Error: " + e.getMessage() + "\"}";
             ctx.status(500).result(msg);
         }
     }
@@ -101,7 +103,7 @@ public class Server {
         } catch (UnauthorizedException e) {
             ctx.status(e.getCode()).result(e.getMessage());
         } catch (Exception e) {
-            var msg = "{\"message\": \"Error: 500\"}";
+            var msg = "{\"message\": \"Error: " + e.getMessage() + "\"}";
             ctx.status(500).result(msg);
         }
     }
@@ -118,7 +120,7 @@ public class Server {
         }  catch (UnauthorizedException e) {
             ctx.status(e.getCode()).result(e.getMessage());
         } catch (Exception e) {
-            var msg = "{\"message\": \"Error: 500\"}";
+            var msg = "{\"message\": \"Error: " + e.getMessage() + "\"}";
             ctx.status(500).result(msg);
         }
 
@@ -142,7 +144,35 @@ public class Server {
         } catch (UnauthorizedException e) {
             ctx.status(e.getCode()).result(e.getMessage());
         } catch (Exception e) {
-            var msg = "{\"message\": \"Error: 500\"}";
+            var msg = "{\"message\": \"Error: " + e.getMessage() + "\"}";
+            ctx.status(500).result(msg);
+        }
+    }
+
+    private void joinGame(Context ctx) {
+        try {
+            var serializer = new Gson();
+            var auth = ctx.header("authorization");
+            String requestJson = ctx.body();
+            Map<String, Object> data = serializer.fromJson(requestJson, new TypeToken<Map<String, Object>>(){}.getType());
+            Double raw = (Double) data.get("gameID");
+            Integer gameID;
+            if (raw == null) {
+                gameID = null;
+            } else {
+                gameID = raw.intValue();
+            }
+
+            service.joinGame((String) data.get("playerColor"), gameID, auth);
+            ctx.status(200).result("{}");
+        } catch (UnauthorizedException e) {
+            ctx.status(e.getCode()).result(e.getMessage());
+        } catch (BadRequestException e) {
+            ctx.status(e.getCode()).result(e.getMessage());
+        } catch (AlreadyTakenException e) {
+            ctx.status(e.getCode()).result(e.getMessage());
+        } catch (Exception e) {
+            var msg = "{\"message\": \"Error: " + e.getMessage() + "\"}";
             ctx.status(500).result(msg);
         }
     }

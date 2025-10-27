@@ -1,11 +1,12 @@
 package dataaccess;
 
 
-import java.util.HashSet;
-import java.util.Set;
+import datamodel.AuthData;
+
+import java.util.HashMap;
 
 public class MemoryAuthDataAccess implements AuthDataAccess {
-    private final Set<String> authTokens = new HashSet<>();
+    private final HashMap<String, String> authTokens = new HashMap<>();
 
     @Override
     public void clear() {
@@ -14,7 +15,12 @@ public class MemoryAuthDataAccess implements AuthDataAccess {
 
     @Override
     public Boolean verifyAuth(String authToken) {
-        return authTokens.contains(authToken);
+        return authTokens.containsKey(authToken);
+    }
+
+    @Override
+    public AuthData getAuth(String authToken) {
+        return new AuthData(authTokens.get(authToken), authToken);
     }
 
     @Override
@@ -23,7 +29,7 @@ public class MemoryAuthDataAccess implements AuthDataAccess {
     }
 
     @Override
-    public void add(String authToken) {
-        authTokens.add(authToken);
+    public void add(String authToken, String username) {
+        authTokens.put(authToken, username);
     }
 }
