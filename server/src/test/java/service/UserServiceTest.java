@@ -69,4 +69,21 @@ class UserServiceTest {
         service.register(user);
         assertThrows(UnauthorizedException.class, () -> service.login(new UserData("Blake", "", "letmein")));
     }
+
+    @Test
+    void logout() throws Exception {
+        var user = new UserData("Blake", "blake@yahoo.com", "pswd");
+        var authData = service.register(user);
+        service.logout(authData.authToken());
+        assertFalse(authDAO.verifyAuth(authData.authToken()));
+    }
+
+    @Test
+    void logoutBadAuth() throws Exception {
+        var user = new UserData("Blake", "blake@yahoo.com", "pswd");
+        service.register(user);
+        assertThrows(UnauthorizedException.class, () -> service.logout("secretAuth69"));
+    }
+
+
 }
