@@ -158,4 +158,20 @@ public class PieceMovesCalculator {
     public Collection<ChessMove> pieceMoves() {
         return new ArrayList<>();
     }
+
+    public boolean outOfBounds(int i, int j) {
+        return i < 1 || j < 1 || i > 8 || j > 8;
+    }
+
+    public boolean isPiecePosition (int i, int j) {
+        return i == currRow && j == currCol;
+    }
+
+    public void addIfEmptyOrEnemy(int i, int j) {
+        ChessPosition newPosition = new ChessPosition(i, j);
+        if (board.getPiece(newPosition) == null || board.getPiece(newPosition).getTeamColor() == enemyColor) {
+            ChessMove move = new ChessMove(currPosition, newPosition, null);
+            moveCollection.add(move);
+        }
+    }
 }
