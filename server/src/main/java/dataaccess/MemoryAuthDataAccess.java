@@ -9,6 +9,11 @@ public class MemoryAuthDataAccess implements AuthDataAccess {
     private final HashMap<String, String> authTokens = new HashMap<>();
 
     @Override
+    public HashMap<String, String> getAuthTokens() {
+        return authTokens;
+    }
+
+    @Override
     public void clear() {
         authTokens.clear();
     }
