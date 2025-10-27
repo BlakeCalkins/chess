@@ -54,10 +54,12 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece;
-        if (board.getPiece(startPosition) == null)
+        if (board.getPiece(startPosition) == null) {
             return null;
-        else
+        }
+        else {
             piece = board.getPiece(startPosition);
+        }
         Collection<ChessMove> valids = new ArrayList<>();
         Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
         for (ChessMove move: moves) {
@@ -76,12 +78,15 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        if (board.getPiece(move.getStartPosition()) == null)
+        if (board.getPiece(move.getStartPosition()) == null) {
             throw new InvalidMoveException("No piece here.");
-        if (board.getPiece(move.getStartPosition()).getTeamColor() != teamColor)
+        }
+        if (board.getPiece(move.getStartPosition()).getTeamColor() != teamColor) {
             throw new InvalidMoveException("Not your turn");
-        if (!validMoves(move.getStartPosition()).contains(move))
+        }
+        if (!validMoves(move.getStartPosition()).contains(move)) {
             throw new InvalidMoveException("Illegal Move");
+        }
         board.movePiece(move, board.getPiece(move.getStartPosition()));
         if (getTeamTurn() == TeamColor.WHITE) {
             setTeamTurn(TeamColor.BLACK);
@@ -101,7 +106,9 @@ public class ChessGame {
         for (int row = 1; row < 9; row++) {
             for (int col = 1; col < 9; col++) {
                 ChessPosition pos = new ChessPosition(row, col);
-                if (board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == teamColor && board.getPiece(pos).getPieceType() == ChessPiece.PieceType.KING) {
+                if (board.getPiece(pos) != null &&
+                        board.getPiece(pos).getTeamColor() == teamColor &&
+                        board.getPiece(pos).getPieceType() == ChessPiece.PieceType.KING) {
                     return pos;
                 }
             }
