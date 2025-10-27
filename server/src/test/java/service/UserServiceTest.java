@@ -1,6 +1,8 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.*;
+import datamodel.GameData;
 import datamodel.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -83,6 +85,21 @@ class UserServiceTest {
         var user = new UserData("Blake", "blake@yahoo.com", "pswd");
         service.register(user);
         assertThrows(UnauthorizedException.class, () -> service.logout("secretAuth69"));
+    }
+
+    @Test
+    void createGame() throws Exception {
+        var user = new UserData("Blake", "blake@yahoo.com", "pswd");
+        var authData = service.register(user);
+        assertEquals(1, service.createGame(new GameData(0, "", "", "myGame", new ChessGame()), authData.authToken()));
+    }
+
+    @Test
+    void createNoName() throws Exception {
+        var user = new UserData("Blake", "blake@yahoo.com", "pswd");
+        var authData = service.register(user);
+        var gameData = new GameData(0, "", "", "", new ChessGame());
+        assertThrows(BadRequestException.class, () -> service.createGame(gameData, authData.authToken()));
     }
 
 

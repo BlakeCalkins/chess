@@ -65,7 +65,7 @@ public class Service {
     }
 
     public int createGame(GameData gameData, String authToken) throws Exception {
-        if (gameData.gameName() == null) {
+        if (gameData.gameName() == null || gameData.gameName().isEmpty()) {
             throw new BadRequestException("bad request");
         }
         if (!authDataAccess.verifyAuth(authToken)) {
