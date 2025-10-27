@@ -44,7 +44,6 @@ public class MemoryGameDataAccess implements GameDataAccess {
         } else {
             newGame = new GameData(gameID, oldGame.whiteUsername(), username, oldGame.gameName(), oldGame.game());
         }
-        System.out.println(newGame);
         games.put(gameID, newGame);
     }
 

@@ -108,6 +108,20 @@ class UserServiceTest {
         assertThrows(UnauthorizedException.class, () -> service.listGames("secretAuth69"));
     }
 
+    @Test
+    void joinGame() throws Exception {
+        var authData = service.register(user);
+        service.createGame(new GameData(0, "", "", "myGame", new ChessGame()), authData.authToken());
+        service.joinGame("WHITE", 1, authData.authToken());
+        assertEquals("Blake", gameDAO.getGame(1).whiteUsername());
+    }
 
+    @Test
+    void joinWithTakenColor() throws Exception {
+        var authData = service.register(user);
+        service.createGame(new GameData(0, "", "", "myGame", new ChessGame()), authData.authToken());
+        service.joinGame("WHITE", 1, authData.authToken());
+        assertThrows(AlreadyTakenException.class, () -> service.joinGame("WHITE", 1, authData.authToken()));
+    }
 
 }
