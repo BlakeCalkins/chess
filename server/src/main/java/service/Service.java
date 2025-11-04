@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDataAccess;
+import dataaccess.DataAccessException;
 import dataaccess.GameDataAccess;
 import dataaccess.UserDataAccess;
 import datamodel.*;
@@ -19,7 +20,7 @@ public class Service {
         this.gameDataAccess = gameDataAccess;
     }
 
-    public void clear() {
+    public void clear() throws DataAccessException {
         userDataAccess.clear();
         authDataAccess.clear();
         gameDataAccess.clear();
@@ -57,7 +58,7 @@ public class Service {
         authDataAccess.deleteAuth(authToken);
     }
 
-    public List<GameData> listGames(String authToken) throws UnauthorizedException {
+    public List<GameData> listGames(String authToken) throws UnauthorizedException, DataAccessException {
         if (!authDataAccess.verifyAuth(authToken)) {
             throw new UnauthorizedException("unauthorized");
         }

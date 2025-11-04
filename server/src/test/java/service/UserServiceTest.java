@@ -6,6 +6,11 @@ import datamodel.GameData;
 import datamodel.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,9 +23,36 @@ class UserServiceTest {
     UserData user = new UserData("Blake", "blake@yahoo.com", "pswd");
 
 
+//    static Stream<Arguments> daoProvider() {
+//        return Stream.of(
+//                Arguments.of(new MemoryUserDataAccess(), new MemoryAuthDataAccess(), new MemoryGameDataAccess()),
+//                Arguments.of(new MySQLUserDAO(), new MySQLAuthDAO(), new MySQLGameDAO())
+//        );
+//    }
+//
+//    @ParameterizedTest
+//    @MethodSource("daoProvider")
+//    void testServiceBehavior(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) {
+//        Service service = new Service(userDAO, authDAO, gameDAO);
+//        // test logic here
+//    }
+//
+//    @ParameterizedTest
+//    @MethodSource("authDAOProvider")
+//    void testAuthBehavior(AuthDataAccess authDAO) {
+//        Service service = new Service(userDAO, authDAO, gameDAO);
+//        // test logic here
+//    }
+//
+//    static Stream<AuthDataAccess> authDAOProvider() {
+//        return Stream.of(
+//                new MemoryAuthDataAccess(),
+//                new MySQLAuthDAO()
+//        );
+//    }
 
     @AfterEach
-    void clear() {
+    void clear() throws DataAccessException {
         userDAO.clear();
         authDAO.clear();
         gameDAO.clear();
