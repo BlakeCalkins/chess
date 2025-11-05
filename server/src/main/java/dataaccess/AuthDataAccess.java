@@ -10,5 +10,5 @@ public interface AuthDataAccess {
     Boolean verifyAuth(String authToken) throws DataAccessException;
     AuthData getAuth(String authToken);
     void deleteAuth(String authToken);
-    void add(String username, String authToken);
+    void add(String authToken, String username);
 }

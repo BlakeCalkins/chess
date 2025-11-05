@@ -10,8 +10,6 @@ class UserDataAccessTest {
 
     UserData user = new UserData("blake", "blake@yahoo.com", "password");
 
-    // petshop has example of test for phase 3 and 4 at same time.
-
     @AfterEach
     void clearOut() throws DataAccessException {
         UserDataAccess db = new MySQLUserDAO();
