@@ -75,15 +75,46 @@ public class MySQLGameDAO implements GameDataAccess {
 
     @Override
     public GameData getGame(Integer gameID) {
-        return null;
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var stmt = "SELECT game_id, white_username, black_username, game_name, game FROM games WHERE game_id = ?";
+            try (var preparedStatement = conn.prepareStatement(stmt)) {
+                preparedStatement.setInt(1, gameID);
+                try (var rs = preparedStatement.executeQuery()) {
+                    var gameId = rs.getInt("game_id");
+                    var whiteUsername = rs.getString("white_username");
+                    var blackUsername = rs.getString("black_username");
+                    var gameName = rs.getString("game_name");
+                    var json = rs.getString("game");
+                    var game = new Gson().fromJson(json, ChessGame.class);
+
+                    return new GameData(gameId, whiteUsername, blackUsername, gameName, game);
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void joinGame(Integer gameID, String username, String playerColor) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            String stmt;
+            if (playerColor.equals("WHITE")) {
+                stmt = "UPDATE games SET white_username = ? WHERE game_id = ?";
+            } else {
+                stmt = "UPDATE games SET black_username = ? WHERE game_id = ?";
+            }
+            try (var preparedStatement = conn.prepareStatement(stmt)) {
+                preparedStatement.setString(1, username);
+                preparedStatement.setInt(1, gameID);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+}
 
-    }
-
-    private final String[] createStatements = {
+        private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  games (
               `game_id` INT NOT NULL AUTO_INCREMENT,

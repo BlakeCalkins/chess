@@ -5,7 +5,6 @@ import dataaccess.*;
 import datamodel.GameData;
 import datamodel.UserData;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -19,7 +18,6 @@ class UserServiceTest {
     static UserDataAccess userDAO = new MemoryUserDataAccess();
     static AuthDataAccess authDAO = new MemoryAuthDataAccess();
     static GameDataAccess gameDAO = new MemoryGameDataAccess();
-    Service service = new Service(userDAO, authDAO, gameDAO);
     UserData user = new UserData("Blake", "blake@yahoo.com", "pswd");
 
 
@@ -145,16 +143,20 @@ class UserServiceTest {
         assertThrows(UnauthorizedException.class, () -> service.listGames("secretAuth69"));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("daoProvider")
     void joinGame() throws Exception {
+        Service service = new Service(userDAO, authDAO, gameDAO);
         var authData = service.register(user);
         service.createGame(new GameData(0, "", "", "myGame", new ChessGame()), authData.authToken());
         service.joinGame("WHITE", 1, authData.authToken());
         assertEquals("Blake", gameDAO.getGame(1).whiteUsername());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("daoProvider")
     void joinWithTakenColor() throws Exception {
+        Service service = new Service(userDAO, authDAO, gameDAO);
         var authData = service.register(user);
         service.createGame(new GameData(0, "", "", "myGame", new ChessGame()), authData.authToken());
         service.joinGame("WHITE", 1, authData.authToken());
