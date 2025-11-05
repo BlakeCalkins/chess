@@ -15,9 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
 
-    static UserDataAccess userDAO = new MemoryUserDataAccess();
-    static AuthDataAccess authDAO = new MemoryAuthDataAccess();
-    static GameDataAccess gameDAO = new MemoryGameDataAccess();
+    private UserDataAccess userDAO;
+    private AuthDataAccess authDAO;
+    private GameDataAccess gameDAO;
     UserData user = new UserData("Blake", "blake@yahoo.com", "pswd");
 
 
@@ -28,13 +28,11 @@ class UserServiceTest {
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("daoProvider")
     @AfterEach
     void clear() throws DataAccessException {
-        userDAO.clear();
-        authDAO.clear();
-        gameDAO.clear();
+        if (userDAO != null) userDAO.clear();
+        if (authDAO != null) authDAO.clear();
+        if (gameDAO != null) gameDAO.clear();
         assertTrue(userDAO.getUsers().isEmpty());
         assertTrue(authDAO.getAuthTokens().isEmpty());
         assertTrue(gameDAO.listGames().isEmpty());
@@ -43,6 +41,9 @@ class UserServiceTest {
     @ParameterizedTest
     @MethodSource("daoProvider")
     void register(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) throws Exception {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
         Service service = new Service(userDAO, authDAO, gameDAO);
         var authData = service.register(user);
         assertNotNull(authData);
@@ -52,7 +53,10 @@ class UserServiceTest {
 
     @ParameterizedTest
     @MethodSource("daoProvider")
-    void registerInvalidUsername() {
+    void registerInvalidUsername(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
         Service service = new Service(userDAO, authDAO, gameDAO);
         var user = new UserData(null, "j@j.com", "pswd");
         assertThrows(Exception.class, () -> service.register(user));
@@ -60,7 +64,10 @@ class UserServiceTest {
 
     @ParameterizedTest
     @MethodSource("daoProvider")
-    void registerDuplicateUsername() throws Exception {
+    void registerDuplicateUsername(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) throws Exception {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
         Service service = new Service(userDAO, authDAO, gameDAO);
         var user2 = new UserData("Blake", "blake@yahoo.com", "password");
         service.register(user);
@@ -69,7 +76,10 @@ class UserServiceTest {
 
     @ParameterizedTest
     @MethodSource("daoProvider")
-    void login() throws Exception {
+    void login(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) throws Exception {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
         Service service = new Service(userDAO, authDAO, gameDAO);
         service.register(user);
         var authData = service.login(new UserData("Blake", "", "pswd"));
@@ -78,7 +88,10 @@ class UserServiceTest {
 
     @ParameterizedTest
     @MethodSource("daoProvider")
-    void loginNoUser() throws Exception {
+    void loginNoUser(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) throws Exception {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
         Service service = new Service(userDAO, authDAO, gameDAO);
         service.register(user);
         assertThrows(UnauthorizedException.class, () -> service.login(new UserData("", "", "pswd")));
@@ -86,7 +99,10 @@ class UserServiceTest {
 
     @ParameterizedTest
     @MethodSource("daoProvider")
-    void loginWrongPassword () throws Exception {
+    void loginWrongPassword (UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) throws Exception {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
         Service service = new Service(userDAO, authDAO, gameDAO);
         service.register(user);
         assertThrows(UnauthorizedException.class, () -> service.login(new UserData("Blake", "", "letmein")));
@@ -94,7 +110,10 @@ class UserServiceTest {
 
     @ParameterizedTest
     @MethodSource("daoProvider")
-    void logout() throws Exception {
+    void logout(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) throws Exception {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
         Service service = new Service(userDAO, authDAO, gameDAO);
         var authData = service.register(user);
         service.logout(authData.authToken());
@@ -103,7 +122,10 @@ class UserServiceTest {
 
     @ParameterizedTest
     @MethodSource("daoProvider")
-    void logoutBadAuth() throws Exception {
+    void logoutBadAuth(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) throws Exception {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
         Service service = new Service(userDAO, authDAO, gameDAO);
         service.register(user);
         assertThrows(UnauthorizedException.class, () -> service.logout("secretAuth69"));
@@ -111,7 +133,10 @@ class UserServiceTest {
 
     @ParameterizedTest
     @MethodSource("daoProvider")
-    void createGame() throws Exception {
+    void createGame(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) throws Exception {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
         Service service = new Service(userDAO, authDAO, gameDAO);
         var authData = service.register(user);
         assertEquals(1, service.createGame(new GameData(0, "", "", "myGame", new ChessGame()), authData.authToken()));
@@ -119,7 +144,10 @@ class UserServiceTest {
 
     @ParameterizedTest
     @MethodSource("daoProvider")
-    void createNoName() throws Exception {
+    void createNoName(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) throws Exception {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
         Service service = new Service(userDAO, authDAO, gameDAO);
         var authData = service.register(user);
         var gameData = new GameData(0, "", "", "", new ChessGame());
@@ -128,7 +156,10 @@ class UserServiceTest {
 
     @ParameterizedTest
     @MethodSource("daoProvider")
-    void listGames() throws Exception {
+    void listGames(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) throws Exception {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
         Service service = new Service(userDAO, authDAO, gameDAO);
         var authData = service.register(user);
         service.createGame(new GameData(0, "", "", "myGame", new ChessGame()), authData.authToken());
@@ -137,7 +168,10 @@ class UserServiceTest {
 
     @ParameterizedTest
     @MethodSource("daoProvider")
-    void listGamesBadAuth() throws Exception {
+    void listGamesBadAuth(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) throws Exception {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
         Service service = new Service(userDAO, authDAO, gameDAO);
         service.register(user);
         assertThrows(UnauthorizedException.class, () -> service.listGames("secretAuth69"));
@@ -145,7 +179,10 @@ class UserServiceTest {
 
     @ParameterizedTest
     @MethodSource("daoProvider")
-    void joinGame() throws Exception {
+    void joinGame(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) throws Exception {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
         Service service = new Service(userDAO, authDAO, gameDAO);
         var authData = service.register(user);
         service.createGame(new GameData(0, "", "", "myGame", new ChessGame()), authData.authToken());
@@ -155,7 +192,10 @@ class UserServiceTest {
 
     @ParameterizedTest
     @MethodSource("daoProvider")
-    void joinWithTakenColor() throws Exception {
+    void joinWithTakenColor(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) throws Exception {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
         Service service = new Service(userDAO, authDAO, gameDAO);
         var authData = service.register(user);
         service.createGame(new GameData(0, "", "", "myGame", new ChessGame()), authData.authToken());

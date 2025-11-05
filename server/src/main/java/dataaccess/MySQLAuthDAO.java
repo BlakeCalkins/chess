@@ -43,10 +43,10 @@ public class MySQLAuthDAO implements AuthDataAccess {
     @Override
     public Boolean verifyAuth(String authToken) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("SELECT EXISTS (SELECT 1 FROM auth WHERE auth_token = ?")) {
+            try (var preparedStatement = conn.prepareStatement("SELECT auth_token FROM auth WHERE auth_token = ?")) {
                 preparedStatement.setString(1, authToken);
                 ResultSet rs = preparedStatement.executeQuery();
-                return rs.next() && rs.getBoolean(1);
+                return rs.next() && rs.getString(1).equals(authToken);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -83,7 +83,7 @@ public class MySQLAuthDAO implements AuthDataAccess {
     }
 
     @Override
-    public void add(String username, String authToken) {
+    public void add(String authToken, String username) {
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (auth_token, username) VALUES(?, ?)")) {
                 preparedStatement.setString(1, authToken);
