@@ -69,21 +69,27 @@ class UserServiceTest {
         assertThrows(AlreadyTakenException.class, () -> service.register(user2));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("daoProvider")
     void login() throws Exception {
+        Service service = new Service(userDAO, authDAO, gameDAO);
         service.register(user);
         var authData = service.login(new UserData("Blake", "", "pswd"));
         assertNotNull(authData);
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("daoProvider")
     void loginNoUser() throws Exception {
+        Service service = new Service(userDAO, authDAO, gameDAO);
         service.register(user);
         assertThrows(UnauthorizedException.class, () -> service.login(new UserData("", "", "pswd")));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("daoProvider")
     void loginWrongPassword () throws Exception {
+        Service service = new Service(userDAO, authDAO, gameDAO);
         service.register(user);
         assertThrows(UnauthorizedException.class, () -> service.login(new UserData("Blake", "", "letmein")));
     }

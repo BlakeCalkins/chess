@@ -1,6 +1,7 @@
 package dataaccess;
 
 import datamodel.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -34,7 +35,7 @@ public class MySQLUserDAO implements UserDataAccess {
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("INSERT INTO users (username, password, email) VALUES(?, ?, ?)")) {
                 preparedStatement.setString(1, user.username());
-                preparedStatement.setString(2, user.password());
+                preparedStatement.setString(2, BCrypt.hashpw(user.password(), BCrypt.gensalt()));
                 preparedStatement.setString(3, user.email());
                 preparedStatement.executeUpdate();
             }
@@ -66,7 +67,20 @@ public class MySQLUserDAO implements UserDataAccess {
 
     @Override
     public Boolean validPassword(UserData user) {
-        return null;
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM users WHERE username = ?")) {
+                preparedStatement.setString(1, user.username());
+                ResultSet rs = preparedStatement.executeQuery();
+                if (rs.next()) {
+                    String p = rs.getString(2);
+                    return BCrypt.checkpw(user.password(), p);
+                } else {
+                    return false;
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private final String[] createStatements = {
