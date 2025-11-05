@@ -8,6 +8,11 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public class MySQLUserDAO implements UserDataAccess {
+
+    public MySQLUserDAO() throws DataAccessException {
+        configureDatabase();
+    }
+
     @Override
     public HashMap<String, UserData> getUsers() {
         return null;

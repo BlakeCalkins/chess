@@ -7,6 +7,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class MySQLGameDAO implements GameDataAccess {
+
+    public MySQLGameDAO() throws DataAccessException {
+        configureDatabase();
+    }
+
     @Override
     public void clear() {
 

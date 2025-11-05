@@ -10,6 +10,11 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class MySQLAuthDAO implements AuthDataAccess {
+
+    public MySQLAuthDAO() throws DataAccessException {
+        configureDatabase();
+    }
+
     @Override
     public HashMap<String, String> getAuthTokens() {
         try (Connection conn = DatabaseManager.getConnection()){
