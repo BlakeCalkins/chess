@@ -56,7 +56,7 @@ public class MySQLUserDAO implements UserDataAccess {
                     return new UserData(u, e, p);
                 }
                 else {
-                    return new UserData(null, null, null);
+                    return null;
                 }
             }
         } catch (SQLException | DataAccessException e) {

@@ -23,34 +23,15 @@ class UserServiceTest {
     UserData user = new UserData("Blake", "blake@yahoo.com", "pswd");
 
 
-//    static Stream<Arguments> daoProvider() {
-//        return Stream.of(
-//                Arguments.of(new MemoryUserDataAccess(), new MemoryAuthDataAccess(), new MemoryGameDataAccess()),
-//                Arguments.of(new MySQLUserDAO(), new MySQLAuthDAO(), new MySQLGameDAO())
-//        );
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("daoProvider")
-//    void testServiceBehavior(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) {
-//        Service service = new Service(userDAO, authDAO, gameDAO);
-//        // test logic here
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("authDAOProvider")
-//    void testAuthBehavior(AuthDataAccess authDAO) {
-//        Service service = new Service(userDAO, authDAO, gameDAO);
-//        // test logic here
-//    }
-//
-//    static Stream<AuthDataAccess> authDAOProvider() {
-//        return Stream.of(
-//                new MemoryAuthDataAccess(),
-//                new MySQLAuthDAO()
-//        );
-//    }
+    static Stream<Arguments> daoProvider() throws DataAccessException {
+        return Stream.of(
+                Arguments.of(new MemoryUserDataAccess(), new MemoryAuthDataAccess(), new MemoryGameDataAccess()),
+                Arguments.of(new MySQLUserDAO(), new MySQLAuthDAO(), new MySQLGameDAO())
+        );
+    }
 
+    @ParameterizedTest
+    @MethodSource("daoProvider")
     @AfterEach
     void clear() throws DataAccessException {
         userDAO.clear();
@@ -61,8 +42,10 @@ class UserServiceTest {
         assertTrue(gameDAO.listGames().isEmpty());
     }
 
-    @Test
-    void register() throws Exception {
+    @ParameterizedTest
+    @MethodSource("daoProvider")
+    void register(UserDataAccess userDAO, AuthDataAccess authDAO, GameDataAccess gameDAO) throws Exception {
+        Service service = new Service(userDAO, authDAO, gameDAO);
         var authData = service.register(user);
         assertNotNull(authData);
         assertEquals(user.username(), authData.username());

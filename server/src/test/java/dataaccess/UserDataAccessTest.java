@@ -10,7 +10,7 @@ class UserDataAccessTest {
     // petshop has example of test for phase 3 and 4 at same time.
 
     @Test
-    void clear() {
+    void clear() throws DataAccessException {
         UserDataAccess db = new MemoryUserDataAccess();
         db.createUser(new UserData("joe", "j@j.com", "pswd"));
         db.clear();
@@ -18,7 +18,7 @@ class UserDataAccessTest {
     }
 
     @Test
-    void createUser() {
+    void createUser() throws DataAccessException {
         UserDataAccess db = new MemoryUserDataAccess();
         var user = new UserData("joe", "j@j.com", "pswd");
         db.createUser(user);
