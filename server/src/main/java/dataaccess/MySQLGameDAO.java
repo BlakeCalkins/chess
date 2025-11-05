@@ -125,7 +125,7 @@ public class MySQLGameDAO implements GameDataAccess {
               `game_id` INT NOT NULL AUTO_INCREMENT,
               `white_username` varchar(256) DEFAULT NULL,
               `black_username` varchar(256) DEFAULT NULL,
-              `game_name` varchar(256) NOT NULL,
+              `game_name` varchar(256) NOT NULL UNIQUE,
               `game` longtext NOT NULL,
               PRIMARY KEY (`game_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
