@@ -3,6 +3,7 @@ package dataaccess;
 import datamodel.UserData;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -24,7 +25,23 @@ public class MySQLUserDAO implements UserDataAccess {
 
     @Override
     public UserData getUser(String username) {
-        return null;
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM users WHERE username = ?")) {
+                preparedStatement.setString(1, username);
+                ResultSet rs = preparedStatement.executeQuery();
+                if (rs.next()) {
+                    String u = rs.getString(1);
+                    String p = rs.getString(2);
+                    String e = rs.getString(3);
+                    return new UserData(u, e, p);
+                }
+                else {
+                    return new UserData(null, null, null);
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
