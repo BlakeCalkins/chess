@@ -94,15 +94,19 @@ class UserServiceTest {
         assertThrows(UnauthorizedException.class, () -> service.login(new UserData("Blake", "", "letmein")));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("daoProvider")
     void logout() throws Exception {
+        Service service = new Service(userDAO, authDAO, gameDAO);
         var authData = service.register(user);
         service.logout(authData.authToken());
         assertFalse(authDAO.verifyAuth(authData.authToken()));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("daoProvider")
     void logoutBadAuth() throws Exception {
+        Service service = new Service(userDAO, authDAO, gameDAO);
         service.register(user);
         assertThrows(UnauthorizedException.class, () -> service.logout("secretAuth69"));
     }

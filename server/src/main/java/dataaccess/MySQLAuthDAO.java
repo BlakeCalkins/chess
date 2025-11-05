@@ -58,7 +58,14 @@ public class MySQLAuthDAO implements AuthDataAccess {
 
     @Override
     public void deleteAuth(String authToken) {
-
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM auth WHERE auth_token = ? LIMIT 1")) {
+                preparedStatement.setString(1, authToken);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
