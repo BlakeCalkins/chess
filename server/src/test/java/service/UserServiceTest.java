@@ -52,14 +52,18 @@ class UserServiceTest {
         assertFalse(authData.authToken().isEmpty());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("daoProvider")
     void registerInvalidUsername() {
+        Service service = new Service(userDAO, authDAO, gameDAO);
         var user = new UserData(null, "j@j.com", "pswd");
         assertThrows(Exception.class, () -> service.register(user));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("daoProvider")
     void registerDuplicateUsername() throws Exception {
+        Service service = new Service(userDAO, authDAO, gameDAO);
         var user2 = new UserData("Blake", "blake@yahoo.com", "password");
         service.register(user);
         assertThrows(AlreadyTakenException.class, () -> service.register(user2));
