@@ -14,7 +14,13 @@ public class MySQLGameDAO implements GameDataAccess {
 
     @Override
     public void clear() {
-
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("TRUNCATE users")) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -45,7 +51,7 @@ public class MySQLGameDAO implements GameDataAccess {
               `black_username` varchar(256) DEFAULT NULL,
               `game_name` varchar(256) NOT NULL,
               `game` longtext NOT NULL,
-              PRIMARY KEY (`gameID`),
+              PRIMARY KEY (`gameID`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
