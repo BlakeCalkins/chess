@@ -6,6 +6,7 @@ import datamodel.GameData;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class MySQLGameDAO implements GameDataAccess {
     public Integer createGame(GameData gameData) {
         try (Connection conn = DatabaseManager.getConnection()) {
             var stmt = "INSERT INTO games (game_name, game) VALUES(?, ?)";
-            try (var preparedStatement = conn.prepareStatement(stmt)) {
+            try (var preparedStatement = conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS)) {
                 preparedStatement.setString(1, gameData.gameName());
                 var json = new Gson().toJson(new ChessGame());
                 preparedStatement.setString(2, json);
@@ -80,14 +81,18 @@ public class MySQLGameDAO implements GameDataAccess {
             try (var preparedStatement = conn.prepareStatement(stmt)) {
                 preparedStatement.setInt(1, gameID);
                 try (var rs = preparedStatement.executeQuery()) {
-                    var gameId = rs.getInt("game_id");
-                    var whiteUsername = rs.getString("white_username");
-                    var blackUsername = rs.getString("black_username");
-                    var gameName = rs.getString("game_name");
-                    var json = rs.getString("game");
-                    var game = new Gson().fromJson(json, ChessGame.class);
+                    if (rs.next()) {
+                        var gameId = rs.getInt("game_id");
+                        var whiteUsername = rs.getString("white_username");
+                        var blackUsername = rs.getString("black_username");
+                        var gameName = rs.getString("game_name");
+                        var json = rs.getString("game");
+                        var game = new Gson().fromJson(json, ChessGame.class);
 
-                    return new GameData(gameId, whiteUsername, blackUsername, gameName, game);
+                        return new GameData(gameId, whiteUsername, blackUsername, gameName, game);
+                    } else {
+                        return null;
+                    }
                 }
             }
         } catch (SQLException | DataAccessException e) {
@@ -106,7 +111,7 @@ public class MySQLGameDAO implements GameDataAccess {
             }
             try (var preparedStatement = conn.prepareStatement(stmt)) {
                 preparedStatement.setString(1, username);
-                preparedStatement.setInt(1, gameID);
+                preparedStatement.setInt(2, gameID);
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException | DataAccessException e) {
