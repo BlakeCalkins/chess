@@ -58,7 +58,15 @@ public class MySQLAuthDAO implements AuthDataAccess {
 
     @Override
     public void add(String username, String authToken) {
-
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (auth_token, username) VALUES(?, ?)")) {
+                preparedStatement.setString(1, authToken);
+                preparedStatement.setString(2, username);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private int executeUpdate(String statement, Object... params) throws DataAccessException {
