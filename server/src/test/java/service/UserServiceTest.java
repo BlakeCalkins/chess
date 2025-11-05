@@ -111,14 +111,18 @@ class UserServiceTest {
         assertThrows(UnauthorizedException.class, () -> service.logout("secretAuth69"));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("daoProvider")
     void createGame() throws Exception {
+        Service service = new Service(userDAO, authDAO, gameDAO);
         var authData = service.register(user);
         assertEquals(1, service.createGame(new GameData(0, "", "", "myGame", new ChessGame()), authData.authToken()));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("daoProvider")
     void createNoName() throws Exception {
+        Service service = new Service(userDAO, authDAO, gameDAO);
         var authData = service.register(user);
         var gameData = new GameData(0, "", "", "", new ChessGame());
         assertThrows(BadRequestException.class, () -> service.createGame(gameData, authData.authToken()));
