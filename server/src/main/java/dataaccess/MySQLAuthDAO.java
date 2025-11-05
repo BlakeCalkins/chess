@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MySQLAuthDAO implements AuthDataAccess {
+public class MySQLAuthDAO extends MySQLDAO implements AuthDataAccess {
 
     public MySQLAuthDAO() throws DataAccessException {
         configureDatabase();
@@ -106,17 +106,9 @@ public class MySQLAuthDAO implements AuthDataAccess {
             """
     };
 
-    // not sure if works.
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (Connection conn = DatabaseManager.getConnection()) {
-            for (String statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    @Override
+    public String[] getCreateStatements() {
+        return createStatements;
     }
+
 }

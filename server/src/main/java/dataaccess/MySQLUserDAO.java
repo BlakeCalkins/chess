@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MySQLUserDAO implements UserDataAccess {
+public class MySQLUserDAO extends MySQLDAO implements UserDataAccess {
 
     public MySQLUserDAO() throws DataAccessException {
         configureDatabase();
@@ -107,17 +107,9 @@ public class MySQLUserDAO implements UserDataAccess {
             """
     };
 
-    // not sure if works.
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (Connection conn = DatabaseManager.getConnection()) {
-            for (String statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    @Override
+    public String[] getCreateStatements() {
+        return createStatements;
     }
+
 }

@@ -10,7 +10,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySQLGameDAO implements GameDataAccess {
+public class MySQLGameDAO extends MySQLDAO implements GameDataAccess {
 
     public MySQLGameDAO() throws DataAccessException {
         configureDatabase();
@@ -62,12 +62,12 @@ public class MySQLGameDAO implements GameDataAccess {
                 preparedStatement.setString(2, json);
                 preparedStatement.executeUpdate();
                 var resultSet = preparedStatement.getGeneratedKeys();
-                var ID = 0;
+                var id = 0;
                 if (resultSet.next()) {
-                    ID = resultSet.getInt(1);
+                    id = resultSet.getInt(1);
                 }
 
-                return ID;
+                return id;
             }
         } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
@@ -132,16 +132,9 @@ public class MySQLGameDAO implements GameDataAccess {
             """
     };
 
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (Connection conn = DatabaseManager.getConnection()) {
-            for (String statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    @Override
+    public String[] getCreateStatements() {
+        return createStatements;
     }
+
 }

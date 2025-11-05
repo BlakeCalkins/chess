@@ -30,9 +30,9 @@ class UserServiceTest {
 
     @AfterEach
     void clear() throws DataAccessException {
-        if (userDAO != null) userDAO.clear();
-        if (authDAO != null) authDAO.clear();
-        if (gameDAO != null) gameDAO.clear();
+        userDAO.clear();
+        authDAO.clear();
+        gameDAO.clear();
         assertTrue(userDAO.getUsers().isEmpty());
         assertTrue(authDAO.getAuthTokens().isEmpty());
         assertTrue(gameDAO.listGames().isEmpty());
