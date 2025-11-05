@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MySQLUserDAO implements UserDataAccess {
 
@@ -16,7 +17,19 @@ public class MySQLUserDAO implements UserDataAccess {
 
     @Override
     public HashMap<String, UserData> getUsers() {
-        return null;
+        try (Connection conn = DatabaseManager.getConnection()){
+            try (var preparedStatement = conn.prepareStatement("SELECT COUNT(*) FROM auth")) {
+                ResultSet rs = preparedStatement.executeQuery();
+                if (rs.next() && rs.getInt(1) == 0) {
+                    return new HashMap<>();
+                } else {
+                    return new HashMap<>(Map.of("not", new UserData(null, null, null)));
+                }
+            }
+
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
