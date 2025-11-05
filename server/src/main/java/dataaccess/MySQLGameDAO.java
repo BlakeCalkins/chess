@@ -6,6 +6,7 @@ import datamodel.GameData;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MySQLGameDAO implements GameDataAccess {
@@ -27,7 +28,27 @@ public class MySQLGameDAO implements GameDataAccess {
 
     @Override
     public List<GameData> listGames() {
-        return List.of();
+        var games = new ArrayList<GameData>();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var stmt = "SELECT game_id, white_username, black_username, game_name, game FROM games";
+            try (var preparedStatement = conn.prepareStatement(stmt)) {
+                try (var rs = preparedStatement.executeQuery()) {
+                    while (rs.next()) {
+                        var gameId = rs.getInt("game_id");
+                        var whiteUsername = rs.getString("white_username");
+                        var blackUsername = rs.getString("black_username");
+                        var gameName = rs.getString("game_name");
+                        var json = rs.getString("game");
+                        var game = new Gson().fromJson(json, ChessGame.class);
+
+                        games.add(new GameData(gameId, whiteUsername, blackUsername, gameName, game));
+                    }
+                }
+            }
+            return games;
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
