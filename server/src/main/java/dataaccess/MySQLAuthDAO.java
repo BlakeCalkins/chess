@@ -53,7 +53,19 @@ public class MySQLAuthDAO implements AuthDataAccess {
 
     @Override
     public AuthData getAuth(String authToken) {
-        return null;
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT username FROM auth WHERE auth_token = ? LIMIT 1")) {
+                preparedStatement.setString(1, authToken);
+                ResultSet rs = preparedStatement.executeQuery();
+                if (rs.next()) {
+                    return new AuthData(rs.getString(1), authToken);
+                } else {
+                    return null;
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
