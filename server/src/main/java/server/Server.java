@@ -2,9 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import dataaccess.MemoryAuthDataAccess;
-import dataaccess.MemoryGameDataAccess;
-import dataaccess.MemoryUserDataAccess;
+import dataaccess.*;
 import datamodel.*;
 import io.javalin.*;
 import io.javalin.http.Context;
@@ -24,12 +22,15 @@ public class Server {
 
 
     public Server() {
-        var userDataAccess = new MemoryUserDataAccess();
-        var authDataAccess = new MemoryAuthDataAccess();
-        var gameDataAccess = new MemoryGameDataAccess();
-        service = new Service(userDataAccess, authDataAccess, gameDataAccess);
-        server = Javalin.create(config -> config.staticFiles.add("web"));
-
+        try {
+            var userDataAccess = new MySQLUserDAO();
+            var authDataAccess = new MySQLAuthDAO();
+            var gameDataAccess = new MySQLGameDAO();
+            service = new Service(userDataAccess, authDataAccess, gameDataAccess);
+            server = Javalin.create(config -> config.staticFiles.add("web"));
+        } catch (DataAccessException e) {
+            throw new RuntimeException();
+        }
         // Register your endpoints and exception handlers here.
         server.delete("db", this::clear);
         server.post("user", this::register);
