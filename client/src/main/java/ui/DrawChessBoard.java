@@ -22,6 +22,7 @@ public class DrawChessBoard {
     private static final String EMPTY = "   ";
 
     private static final ChessBoard board = new ChessBoard();
+    private static final ChessGame.TeamColor playerColor = ChessGame.TeamColor.WHITE;
 
 
     public static void main(String[] args) {
@@ -48,7 +49,11 @@ public class DrawChessBoard {
         String[] columns = {"a", "b", "c", "d", "e", "f", "g", "h"};
         drawBorder(out, " ");
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
-            drawBorder(out, columns[boardCol]);
+            if (playerColor == ChessGame.TeamColor.WHITE) {
+                drawBorder(out, columns[boardCol]);
+            } else {
+                drawBorder(out, columns[flipBoardNumbers(boardCol)]);
+            }
         }
         drawBorder(out, " ");
 
@@ -81,10 +86,18 @@ public class DrawChessBoard {
         for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {
 
             setGrey(out);
-            drawBorder(out, rows[boardRow]);
+            if (playerColor == ChessGame.TeamColor.WHITE) {
+                drawBorder(out, rows[boardRow]);
+            } else {
+                drawBorder(out, rows[flipBoardNumbers(boardRow)]);
+            }
             squareColor = (boardRow%2 == 0) ? "dark" : "light";
             drawRowOfSquares(out, boardRow, squareColor);
-            drawBorder(out, rows[boardRow]);
+            if (playerColor == ChessGame.TeamColor.WHITE) {
+                drawBorder(out, rows[boardRow]);
+            } else {
+                drawBorder(out, rows[flipBoardNumbers(boardRow)]);
+            }
             setBlack(out);
             out.println();
         }
@@ -97,7 +110,12 @@ public class DrawChessBoard {
                 int suffixLength = 0;
 
                 out.print(EMPTY.repeat(prefixLength));
-                ChessPosition position = new ChessPosition(boardRow+1, boardCol+1);
+                ChessPosition position;
+                if (playerColor == ChessGame.TeamColor.BLACK) {
+                    position = new ChessPosition(boardRow+1, boardCol+1);
+                } else {
+                    position = new ChessPosition(flipBoardNumbers(boardRow)+1, flipBoardNumbers(boardCol)+1);
+                }
                 ChessPiece piece = board.getPiece(position);
                 squareColor = switchColor(squareColor);
                 printPlayer(out, (piece == null) ? " " : piece.toString(), (piece == null) ? null : piece.getTeamColor(), squareColor);
@@ -159,6 +177,19 @@ public class DrawChessBoard {
         } else {
             setWhite(out);
         }
+    }
 
+    private static int flipBoardNumbers(int num) {
+        return switch (num) {
+            case 0 -> 7;
+            case 1 -> 6;
+            case 2 -> 5;
+            case 3 -> 4;
+            case 4 -> 3;
+            case 5 -> 2;
+            case 6 -> 1;
+            case 7 -> 0;
+            default -> throw new IllegalStateException("Unexpected value: " + num);
+        };
     }
 }
