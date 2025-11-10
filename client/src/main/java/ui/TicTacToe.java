@@ -1,6 +1,8 @@
 package ui;
 
 import chess.ChessBoard;
+import chess.ChessGame;
+import chess.ChessPiece;
 import chess.ChessPosition;
 
 import java.io.PrintStream;
@@ -29,7 +31,6 @@ public class TicTacToe {
         out.print(ERASE_SCREEN);
 
         board.resetBoard();
-        out.print(board);
 
         drawHeaders(out);
 
@@ -112,7 +113,8 @@ public class TicTacToe {
 
                     out.print(EMPTY.repeat(prefixLength));
                     ChessPosition position = new ChessPosition(boardRow+1, boardCol+1);
-                    printPlayer(out, (board.getPiece(position) == null) ? " " : board.getPiece(position).toString());
+                    ChessPiece piece = board.getPiece(position);
+                    printPlayer(out, (piece == null) ? " " : piece.toString(), (piece == null) ? null : piece.getTeamColor());
 //                    printPlayer(out, rand.nextBoolean() ? X : O);
                     out.print(EMPTY.repeat(suffixLength));
                 }
@@ -159,9 +161,14 @@ public class TicTacToe {
         out.print(SET_TEXT_COLOR_GOOD_GREEN);
     }
 
-    private static void printPlayer(PrintStream out, String player) {
+    private static void printPlayer(PrintStream out, String player, ChessGame.TeamColor color) {
         out.print(SET_BG_COLOR_GOOD_GREEN);
-        out.print(SET_TEXT_COLOR_BLACK);
+
+        if (color == null || color == ChessGame.TeamColor.WHITE) {
+            out.print(SET_TEXT_COLOR_RED);
+        } else {
+            out.print(SET_TEXT_COLOR_BLUE);
+        }
 
         out.print(" ");
         out.print(player);
