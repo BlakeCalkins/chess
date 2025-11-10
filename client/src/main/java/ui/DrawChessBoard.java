@@ -11,7 +11,7 @@ import java.util.Objects;
 
 import static ui.EscapeSequences.*;
 
-public class TicTacToe {
+public class DrawChessBoard {
 
     // Board dimensions.
     private static final int BOARD_SIZE_IN_SQUARES = 8;
