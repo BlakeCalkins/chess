@@ -1,5 +1,8 @@
 package ui;
 
+import chess.ChessBoard;
+import chess.ChessPosition;
+
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
@@ -16,16 +19,17 @@ public class TicTacToe {
     // Padded characters.
     private static final String SPACE = " ";
     private static final String EMPTY = "   ";
-    private static final String X = " X ";
-    private static final String O = " O ";
 
-    private static Random rand = new Random();
+    private static final ChessBoard board = new ChessBoard();
 
 
     public static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
+
+        board.resetBoard();
+        out.print(board);
 
         drawHeaders(out);
 
@@ -43,7 +47,7 @@ public class TicTacToe {
 
 //        String[] columns = { "TIC", "TAC", "TOE" };
         String[] columns = {"a", "b", "c", "d", "e", "f", "g", "h"};
-        drawHeader(out, "\u2003");
+        drawHeader(out, " ");
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
             drawHeader(out, columns[boardCol]);
 
@@ -51,7 +55,7 @@ public class TicTacToe {
 //                out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
 //            }
         }
-        drawHeader(out, "\u2003");
+        drawHeader(out, " ");
 
         setBlack(out);
         out.println();
@@ -84,7 +88,7 @@ public class TicTacToe {
 
             setGrey(out);
             drawHeader(out, rows[boardRow]);
-            drawRowOfSquares(out);
+            drawRowOfSquares(out, boardRow);
             drawHeader(out, rows[boardRow]);
             setBlack(out);
             out.println();
@@ -97,18 +101,19 @@ public class TicTacToe {
         }
     }
 
-    private static void drawRowOfSquares(PrintStream out) {
+    private static void drawRowOfSquares(PrintStream out, int boardRow) {
 
         for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow) {
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
-                setWhite(out);
 
                 if (squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2) {
                     int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
                     int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
 
                     out.print(EMPTY.repeat(prefixLength));
-                    printPlayer(out, rand.nextBoolean() ? X : O);
+                    ChessPosition position = new ChessPosition(boardRow+1, boardCol+1);
+                    printPlayer(out, (board.getPiece(position) == null) ? " " : board.getPiece(position).toString());
+//                    printPlayer(out, rand.nextBoolean() ? X : O);
                     out.print(EMPTY.repeat(suffixLength));
                 }
                 else {
@@ -121,26 +126,13 @@ public class TicTacToe {
 //                    out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
 //                }
 
-                setBlack(out);
+                setGrey(out);
             }
 
 //            out.println();
         }
     }
 
-    private static void drawHorizontalLine(PrintStream out) {
-
-        int boardSizeInSpaces = BOARD_SIZE_IN_SQUARES * SQUARE_SIZE_IN_PADDED_CHARS +
-                (BOARD_SIZE_IN_SQUARES - 1) * LINE_WIDTH_IN_PADDED_CHARS;
-
-        for (int lineRow = 0; lineRow < LINE_WIDTH_IN_PADDED_CHARS; ++lineRow) {
-            setRed(out);
-            out.print(EMPTY.repeat(boardSizeInSpaces));
-
-            setBlack(out);
-            out.println();
-        }
-    }
 
     private static void setWhite(PrintStream out) {
         out.print(SET_BG_COLOR_WHITE);
@@ -171,7 +163,9 @@ public class TicTacToe {
         out.print(SET_BG_COLOR_GOOD_GREEN);
         out.print(SET_TEXT_COLOR_BLACK);
 
+        out.print(" ");
         out.print(player);
+        out.print(" ");
 
         setGreen(out);
     }
