@@ -22,7 +22,7 @@ public class DrawChessBoard {
     private static final String EMPTY = "   ";
 
     private static final ChessBoard board = new ChessBoard();
-    private static final ChessGame.TeamColor playerColor = ChessGame.TeamColor.WHITE;
+    private static final ChessGame.TeamColor playerColor = ChessGame.TeamColor.BLACK;
 
 
     public static void main(String[] args) {
@@ -111,10 +111,10 @@ public class DrawChessBoard {
 
                 out.print(EMPTY.repeat(prefixLength));
                 ChessPosition position;
-                if (playerColor == ChessGame.TeamColor.BLACK) {
-                    position = new ChessPosition(boardRow+1, boardCol+1);
+                if (playerColor == ChessGame.TeamColor.WHITE) {
+                    position = new ChessPosition(flipBoardNumbers(boardRow)+1, boardCol+1);
                 } else {
-                    position = new ChessPosition(flipBoardNumbers(boardRow)+1, flipBoardNumbers(boardCol)+1);
+                    position = new ChessPosition(boardRow+1, flipBoardNumbers(boardCol)+1);
                 }
                 ChessPiece piece = board.getPiece(position);
                 squareColor = switchColor(squareColor);
