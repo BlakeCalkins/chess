@@ -1,5 +1,6 @@
 import com.google.gson.Gson;
 import datamodel.AuthData;
+import datamodel.GameData;
 import datamodel.UserData;
 import exception.ResponseException;
 
@@ -35,9 +36,14 @@ public class ServerFacade {
 
     public void logout(String authToken) throws ResponseException {
         var request = buildRequest("DELETE", "/session", null, authToken);
-//        String.format("authorization: <%s>", authToken) *****DELETE ME IF OKAY*****
         var response = sendRequest(request);
         handleResponse(response, null);
+    }
+
+    public Integer createGame(String gameName, String authToken) throws ResponseException {
+        var request = buildRequest("POST", "/game", new GameData(0, null, null, gameName, null), authToken);
+        var response = sendRequest(request);
+        return handleResponse(response, GameData.class).gameID();
     }
 
     private HttpRequest buildRequest(String method, String path, Object body, String authToken) {
