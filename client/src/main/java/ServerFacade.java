@@ -17,28 +17,37 @@ public class ServerFacade {
     }
 
     public void clear() throws ResponseException {
-        var request = buildRequest("DELETE", "/db", null);
+        var request = buildRequest("DELETE", "/db", null, null);
         sendRequest(request);
     }
 
     public AuthData register(UserData data) throws ResponseException {
-        var request = buildRequest("POST", "/user", data);
+        var request = buildRequest("POST", "/user", data, null);
         var response = sendRequest(request);
         return handleResponse(response, AuthData.class);
     }
 
     public AuthData login(UserData data) throws ResponseException {
-        var request = buildRequest("POST", "/session", data);
+        var request = buildRequest("POST", "/session", data, null);
         var response = sendRequest(request);
         return handleResponse(response, AuthData.class);
     }
 
-    private HttpRequest buildRequest(String method, String path, Object body) {
+    public void logout(String authToken) throws ResponseException {
+        var request = buildRequest("DELETE", "/session", null, authToken);
+//        String.format("authorization: <%s>", authToken) *****DELETE ME IF OKAY*****
+        var response = sendRequest(request);
+        handleResponse(response, null);
+    }
+
+    private HttpRequest buildRequest(String method, String path, Object body, String authToken) {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))
                 .method(method, makeRequestBody(body));
-        if (body != null) {
+        if (authToken == null) {
             request.setHeader("Content-Type", "application/json");
+        } else {
+            request.setHeader("authorization", authToken);
         }
         return request.build();
     }

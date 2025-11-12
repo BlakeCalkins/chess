@@ -66,4 +66,19 @@ public class ServerFacadeTests {
         assertEquals(ResponseException.Code.Unauthorized, ex.code());
     }
 
+    @Test
+    public void logout() throws ResponseException {
+        facade.register(userData);
+        AuthData data = facade.login(userData);
+        assertDoesNotThrow(() -> facade.logout(data.authToken()));
+    }
+
+    @Test
+    public void logoutBadAuth() throws ResponseException {
+        facade.register(userData);
+        facade.login(userData);
+        ResponseException ex = assertThrows(ResponseException.class, () -> facade.logout(" badAuth"));
+        assertEquals(ResponseException.Code.Unauthorized, ex.code());
+    }
+
 }
