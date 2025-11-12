@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Map;
 
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
@@ -44,6 +45,12 @@ public class ServerFacade {
         var request = buildRequest("POST", "/game", new GameData(0, null, null, gameName, null), authToken);
         var response = sendRequest(request);
         return handleResponse(response, GameData.class).gameID();
+    }
+
+    public Map listGames(String authToken) throws ResponseException {
+        var request = buildRequest("GET", "/game", null, authToken);
+        var response = sendRequest(request);
+        return handleResponse(response, Map.class);
     }
 
     private HttpRequest buildRequest(String method, String path, Object body, String authToken) {

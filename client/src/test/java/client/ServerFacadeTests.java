@@ -97,4 +97,20 @@ public class ServerFacadeTests {
         assertEquals(ResponseException.Code.BadRequest, ex.code());
     }
 
+    @Test
+    public void listGames() throws ResponseException {
+        facade.register(userData);
+        AuthData data = facade.login(userData);
+        facade.createGame("myGame", data.authToken());
+        assertNotNull(facade.listGames(data.authToken()));
+    }
+
+    @Test
+    public void listUnauthorized() throws ResponseException {
+        facade.register(userData);
+        facade.login(userData);
+        ResponseException ex = assertThrows(ResponseException.class, () -> facade.listGames("badAuth"));
+        assertEquals(ResponseException.Code.Unauthorized, ex.code());
+    }
+
 }
