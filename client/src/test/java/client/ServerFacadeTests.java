@@ -32,6 +32,11 @@ public class ServerFacadeTests {
         server.stop();
     }
 
+    @Test
+    void clear() throws ResponseException {
+        facade.clear();
+//        assertNull(facade.listGames());
+    }
 
     @Test
     public void register() throws ResponseException {
@@ -43,7 +48,22 @@ public class ServerFacadeTests {
     @Test
     public void registerAlreadyTaken() throws ResponseException {
         facade.register(userData);
-        assertThrows(ResponseException.class, () -> facade.register(userData));
+        ResponseException ex = assertThrows(ResponseException.class, () -> facade.register(userData));
+        assertEquals(ResponseException.Code.Forbidden, ex.code());
+    }
+
+    @Test
+    public void login() throws ResponseException {
+        facade.register(userData);
+        AuthData data = facade.login(userData);
+        assertNotNull(data.username());
+        assertEquals(36, data.authToken().length());
+    }
+
+    @Test
+    public void loginNoUser() {
+        ResponseException ex = assertThrows(ResponseException.class, () -> facade.login(userData));
+        assertEquals(ResponseException.Code.Unauthorized, ex.code());
     }
 
 }
