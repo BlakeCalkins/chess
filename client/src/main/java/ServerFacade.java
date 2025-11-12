@@ -1,4 +1,6 @@
 import com.google.gson.Gson;
+import datamodel.AuthData;
+import datamodel.UserData;
 import exception.ResponseException;
 
 import java.net.URI;
@@ -12,6 +14,17 @@ public class ServerFacade {
 
     public ServerFacade(String url) {
         serverUrl = url;
+    }
+
+    public void clear() throws ResponseException {
+        var request = buildRequest("DELETE", "/db", null);
+        sendRequest(request);
+    }
+
+    public AuthData register(UserData data) throws ResponseException {
+        var request = buildRequest("POST", "/user", data);
+        var response = sendRequest(request);
+        return handleResponse(response, AuthData.class);
     }
 
     private HttpRequest buildRequest(String method, String path, Object body) {
@@ -45,7 +58,8 @@ public class ServerFacade {
         if (!isSuccessful(status)) {
             var body = response.body();
             if (body != null) {
-                throw ResponseException.fromJson(body);
+                var code = ResponseException.fromHttpStatusCode(status);
+                throw new ResponseException(code, body);
             }
 
             throw new ResponseException(ResponseException.fromHttpStatusCode(status), "other failure: " + status);
