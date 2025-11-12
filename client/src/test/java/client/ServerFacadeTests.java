@@ -1,3 +1,4 @@
+import chess.ChessGame;
 import datamodel.AuthData;
 import datamodel.UserData;
 import exception.ResponseException;
@@ -111,6 +112,24 @@ public class ServerFacadeTests {
         facade.login(userData);
         ResponseException ex = assertThrows(ResponseException.class, () -> facade.listGames("badAuth"));
         assertEquals(ResponseException.Code.Unauthorized, ex.code());
+    }
+
+    @Test
+    public void joinGame() throws ResponseException {
+        facade.register(userData);
+        AuthData data = facade.login(userData);
+        facade.createGame("myGame", data.authToken());
+        assertDoesNotThrow(() -> facade.joinGame(ChessGame.TeamColor.WHITE, 1, data.authToken()));
+    }
+
+    @Test
+    public void joinGameAlreadyTaken() throws ResponseException {
+        facade.register(userData);
+        AuthData data = facade.login(userData);
+        facade.createGame("myGame", data.authToken());
+        facade.joinGame(ChessGame.TeamColor.WHITE, 1, data.authToken());
+        ResponseException ex = assertThrows(ResponseException.class, () -> facade.joinGame(ChessGame.TeamColor.WHITE, 1, data.authToken()));
+        assertEquals(ResponseException.Code.Forbidden, ex.code());
     }
 
 }

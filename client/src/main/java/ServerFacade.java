@@ -1,3 +1,4 @@
+import chess.ChessGame;
 import com.google.gson.Gson;
 import datamodel.AuthData;
 import datamodel.GameData;
@@ -8,6 +9,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ServerFacade {
@@ -51,6 +53,15 @@ public class ServerFacade {
         var request = buildRequest("GET", "/game", null, authToken);
         var response = sendRequest(request);
         return handleResponse(response, Map.class);
+    }
+
+    public void joinGame(ChessGame.TeamColor playerColor, Integer gameID, String authToken) throws ResponseException {
+        Map<String, Object> joinGameRequest = new HashMap<>();
+        joinGameRequest.put("playerColor", playerColor);
+        joinGameRequest.put("gameID", gameID);
+        var request = buildRequest("PUT", "/game", joinGameRequest, authToken);
+        var response = sendRequest(request);
+        handleResponse(response, null);
     }
 
     private HttpRequest buildRequest(String method, String path, Object body, String authToken) {
