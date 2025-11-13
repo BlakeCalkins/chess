@@ -29,8 +29,10 @@ public class Main {
                         System.out.printf("Too %s inputs, type in the format: login <USERNAME> <PASSWORD> %n", amt);
                     } else {
                         System.out.println("logging in...");
-                        // ep.login(username commands[1], password commands[2])
-                        return true;
+                        if (ep.login(commands[1], commands[2])) {
+                            return true;
+                        }
+                        continue;
                     }
                     break;
                 case "quit":

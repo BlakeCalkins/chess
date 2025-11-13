@@ -32,6 +32,19 @@ public class EndpointParser {
         }
     }
 
+    public boolean login(String username, String password) {
+        UserData data = new UserData(username, null, password);
+        try {
+            AuthData auth = facade.login(data);
+            username = auth.username();
+            authToken = auth.authToken();
+            return true;
+        } catch (ResponseException e) {
+            System.out.println(e.parseMessage(e.getMessage()));
+            return false;
+        }
+    }
+
     public void stopServer() {
         server.stop();
     }
