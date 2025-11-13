@@ -1,6 +1,11 @@
+import ui.EndpointParser;
+
 import java.util.Scanner;
 
 public class Main {
+    static EndpointParser ep = new EndpointParser();
+
+
     private static boolean preLoginLoop() {
         while (true) {
             System.out.print("[LOGGED_OUT] >>> ");
@@ -15,7 +20,7 @@ public class Main {
                         System.out.printf("Too %s inputs, type in the format: register <USERNAME> <PASSWORD> <EMAIL>%n", amt);
                     } else {
                         System.out.println("registering...");
-                        // ep.register(username commands[1], password commands[2], email commands[3])
+                         ep.register(commands[1], commands[2], commands[3]);
                     }
                     break;
                 case "login":
@@ -122,7 +127,10 @@ public class Main {
                 if (!postLoginLoop()) {
                     break;
                 }
+            } else {
+                break;
             }
         }
+        ep.stopServer();
     }
 }

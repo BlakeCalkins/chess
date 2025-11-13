@@ -1,9 +1,8 @@
 package exception;
 
-import com.google.gson.Gson;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ResponseException extends Exception {
 
@@ -21,15 +20,15 @@ public class ResponseException extends Exception {
         this.code = code;
     }
 
-    public String toJson() {
-        return new Gson().toJson(Map.of("message", getMessage(), "status", code));
-    }
+    public String parseMessage(String message) {
+        Pattern pattern = Pattern.compile("Error: (.*?)\"");
+        Matcher matcher = pattern.matcher(message);
 
-    public static ResponseException fromJson(String json) {
-        var map = new Gson().fromJson(json, HashMap.class);
-        var status = Code.valueOf(map.get("status").toString());
-        String message = map.get("message").toString();
-        return new ResponseException(status, message);
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            return "";
+        }
     }
 
     public Code code() {
@@ -46,12 +45,4 @@ public class ResponseException extends Exception {
         };
     }
 
-    public int toHttpStatusCode() {
-        return switch (code) {
-            case ServerError -> 500;
-            case BadRequest -> 400;
-            case Unauthorized -> 401;
-            case Forbidden -> 403;
-        };
-    }
 }
