@@ -103,6 +103,15 @@ public class EndpointParser {
         drawer.draw();
     }
 
+    public void logout(String username) {
+        try {
+            String authToken = getAuth(username);
+            facade.logout(authToken);
+        } catch (ResponseException e) {
+            System.out.println(e.parseMessage(e.getMessage()));
+        }
+    }
+
     private void obtainGames(String authToken) {
         try {
             Map<String, Object> root = facade.listGames(authToken);

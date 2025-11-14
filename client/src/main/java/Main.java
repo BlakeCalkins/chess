@@ -99,11 +99,11 @@ public class Main {
                     break;
                 case "logout":
                     System.out.println("logging you out...");
+                    ep.logout(username);
                     return true;
-                    // ep.logout(auth)
                 case "quit":
                     System.out.println("Bye bye!");
-                    // ep.logout(auth)
+                    ep.logout(username);
                     return false;
                 default:
                     System.out.println("create <NAME> - a game");
