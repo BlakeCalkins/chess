@@ -1,10 +1,12 @@
 import chess.ChessGame;
 import ui.EndpointParser;
+import server.Server;
 
 import java.util.Scanner;
 
 public class Main {
-    static EndpointParser ep = new EndpointParser();
+    private static final Server server = new Server();
+    static EndpointParser ep;
     static String username;
 
     private static boolean preLoginLoop() {
@@ -127,6 +129,9 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        int port = server.run(0);
+        System.out.println("Started test HTTP server on " + port);
+        ep = new EndpointParser(port);
         System.out.println("♕ Welcome to the 240 Chess Client. Type help to get started.");
         while (true) {
             if (preLoginLoop()) {
@@ -137,6 +142,6 @@ public class Main {
                 break;
             }
         }
-        ep.stopServer();
+        server.stop();
     }
 }

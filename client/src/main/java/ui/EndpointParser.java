@@ -6,7 +6,7 @@ import datamodel.AuthData;
 import datamodel.GameData;
 import datamodel.UserData;
 import exception.ResponseException;
-import server.Server;
+import facade.ServerFacade;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,13 +15,11 @@ import java.util.List;
 
 
 public class EndpointParser {
-    private static final Server server = new Server();
     private static ServerFacade facade;
     Map<String, String> usersAndAuths = new HashMap<>();
     Map<Integer, GameData> currentGames = new HashMap<>();
 
-    public EndpointParser() {
-        var port = server.run(0);
+    public EndpointParser(int port) {
         System.out.println("Started test HTTP server on " + port);
         facade = new ServerFacade(String.format("http://localhost:%d", port));
     }
@@ -136,7 +134,4 @@ public class EndpointParser {
         return usersAndAuths.get(username);
     }
 
-    public void stopServer() {
-        server.stop();
-    }
 }
