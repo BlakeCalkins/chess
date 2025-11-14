@@ -1,3 +1,5 @@
+package client;
+
 import chess.ChessGame;
 import datamodel.AuthData;
 import datamodel.UserData;
@@ -14,7 +16,7 @@ public class ServerFacadeTests {
 
     private static Server server;
     private static ServerFacade facade;
-    private static final UserData userData = new UserData("blake", "blake@yahoo.com", "myPswd");
+    private static final UserData USER_DATA = new UserData("blake", "blake@yahoo.com", "myPswd");
 
 
     @BeforeAll
@@ -43,91 +45,91 @@ public class ServerFacadeTests {
 
     @Test
     public void register() throws ResponseException {
-        AuthData data = facade.register(userData);
+        AuthData data = facade.register(USER_DATA);
         assertNotNull(data.username());
         assertEquals(36, data.authToken().length());
     }
 
     @Test
     public void registerAlreadyTaken() throws ResponseException {
-        facade.register(userData);
-        ResponseException ex = assertThrows(ResponseException.class, () -> facade.register(userData));
+        facade.register(USER_DATA);
+        ResponseException ex = assertThrows(ResponseException.class, () -> facade.register(USER_DATA));
         assertEquals(ResponseException.Code.Forbidden, ex.code());
     }
 
     @Test
     public void login() throws ResponseException {
-        facade.register(userData);
-        AuthData data = facade.login(userData);
+        facade.register(USER_DATA);
+        AuthData data = facade.login(USER_DATA);
         assertNotNull(data.username());
         assertEquals(36, data.authToken().length());
     }
 
     @Test
     public void loginNoUser() {
-        ResponseException ex = assertThrows(ResponseException.class, () -> facade.login(userData));
+        ResponseException ex = assertThrows(ResponseException.class, () -> facade.login(USER_DATA));
         assertEquals(ResponseException.Code.Unauthorized, ex.code());
     }
 
     @Test
     public void logout() throws ResponseException {
-        facade.register(userData);
-        AuthData data = facade.login(userData);
+        facade.register(USER_DATA);
+        AuthData data = facade.login(USER_DATA);
         assertDoesNotThrow(() -> facade.logout(data.authToken()));
     }
 
     @Test
     public void logoutBadAuth() throws ResponseException {
-        facade.register(userData);
-        facade.login(userData);
+        facade.register(USER_DATA);
+        facade.login(USER_DATA);
         ResponseException ex = assertThrows(ResponseException.class, () -> facade.logout(" badAuth"));
         assertEquals(ResponseException.Code.Unauthorized, ex.code());
     }
 
     @Test
     public void createGame() throws ResponseException {
-        facade.register(userData);
-        AuthData data = facade.login(userData);
+        facade.register(USER_DATA);
+        AuthData data = facade.login(USER_DATA);
         Integer gameID = facade.createGame("myGame", data.authToken());
         assertEquals(1, gameID);
     }
 
     @Test
     public void createNoNameGame() throws ResponseException {
-        facade.register(userData);
-        AuthData data = facade.login(userData);
+        facade.register(USER_DATA);
+        AuthData data = facade.login(USER_DATA);
         ResponseException ex = assertThrows(ResponseException.class, () -> facade.createGame("", data.authToken()));
         assertEquals(ResponseException.Code.BadRequest, ex.code());
     }
 
     @Test
     public void listGames() throws ResponseException {
-        facade.register(userData);
-        AuthData data = facade.login(userData);
+        facade.register(USER_DATA);
+        AuthData data = facade.login(USER_DATA);
         facade.createGame("myGame", data.authToken());
         assertNotNull(facade.listGames(data.authToken()));
     }
 
     @Test
     public void listUnauthorized() throws ResponseException {
-        facade.register(userData);
-        facade.login(userData);
+        facade.register(USER_DATA);
+        facade.login(USER_DATA);
         ResponseException ex = assertThrows(ResponseException.class, () -> facade.listGames("badAuth"));
         assertEquals(ResponseException.Code.Unauthorized, ex.code());
     }
 
     @Test
     public void joinGame() throws ResponseException {
-        facade.register(userData);
-        AuthData data = facade.login(userData);
+        facade.register(USER_DATA);
+        AuthData data = facade.login(USER_DATA);
         facade.createGame("myGame", data.authToken());
         assertDoesNotThrow(() -> facade.joinGame(ChessGame.TeamColor.WHITE, 1, data.authToken()));
     }
 
     @Test
     public void joinGameAlreadyTaken() throws ResponseException {
-        facade.register(userData);
-        AuthData data = facade.login(userData);
+        facade.register(USER_DATA);
+        AuthData data = facade.login(USER_DATA);
         facade.createGame("myGame", data.authToken());
         facade.joinGame(ChessGame.TeamColor.WHITE, 1, data.authToken());
         ResponseException ex = assertThrows(ResponseException.class, () -> facade.joinGame(ChessGame.TeamColor.WHITE, 1, data.authToken()));
