@@ -19,9 +19,8 @@ public class EndpointParser {
     Map<String, String> usersAndAuths = new HashMap<>();
     Map<Integer, GameData> currentGames = new HashMap<>();
 
-    public EndpointParser(int port) {
-        System.out.println("Started test HTTP server on " + port);
-        facade = new ServerFacade(String.format("http://localhost:%d", port));
+    public EndpointParser(String url) {
+        facade = new ServerFacade(url);
     }
 
     public void register(String username, String password, String email) {

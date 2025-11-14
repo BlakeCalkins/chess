@@ -1,11 +1,9 @@
 import chess.ChessGame;
 import ui.EndpointParser;
-import server.Server;
 
 import java.util.Scanner;
 
 public class Main {
-    private static final Server server = new Server();
     static EndpointParser ep;
     static String username;
 
@@ -129,19 +127,21 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        int port = server.run(0);
-        System.out.println("Started test HTTP server on " + port);
-        ep = new EndpointParser(port);
-        System.out.println("♕ Welcome to the 240 Chess Client. Type help to get started.");
-        while (true) {
-            if (preLoginLoop()) {
-                if (!postLoginLoop()) {
+        try {
+            String serverUrl = "http://localhost:8080";
+            ep = new EndpointParser(serverUrl);
+            System.out.println("♕ Welcome to the 240 Chess Client. Type help to get started.");
+            while (true) {
+                if (preLoginLoop()) {
+                    if (!postLoginLoop()) {
+                        break;
+                    }
+                } else {
                     break;
                 }
-            } else {
-                break;
             }
+        } catch (Throwable ex) {
+            System.out.printf("Unable to start server: %s%n", ex.getMessage());
         }
-        server.stop();
     }
 }
