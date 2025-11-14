@@ -1,13 +1,17 @@
 package ui;
 
+import com.google.gson.Gson;
 import datamodel.AuthData;
+import datamodel.GameData;
 import datamodel.UserData;
 import exception.ResponseException;
 import server.Server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.*;
+import java.util.List;
 
 
 public class EndpointParser {
@@ -52,6 +56,33 @@ public class EndpointParser {
         } catch (ResponseException e) {
             System.out.println(e.parseMessage(e.getMessage()));
         }
+    }
+
+    public void listGames(String username) {
+        String authToken = getAuth(username);
+        try {
+            List<String> gameLines = new ArrayList<>();
+            Map<String, Object> root = facade.listGames(authToken);
+            List<Map<String, Object>> games = (List<Map<String, Object>>) root.get("games");
+            for (Map<String, Object> gameEntry : games) {
+                GameData game = parseGame(gameEntry);
+                String whitePlayer = (game.whiteUsername() == null) ? "None" : game.whiteUsername();
+                String blackPlayer = (game.blackUsername() == null) ? "None" : game.blackUsername();
+                String gameLine = String.format("%d. %s, White player: %s, Black Player: %s", game.gameID(), game.gameName(), whitePlayer, blackPlayer);
+                gameLines.add(gameLine);
+            }
+            for (String line : gameLines) {
+                System.out.println(line);
+            }
+        } catch (ResponseException e) {
+            System.out.println(e.parseMessage(e.getMessage()));
+        }
+    }
+
+    private GameData parseGame(Map<String, Object> gameEntry) {
+        Gson gson = new Gson();
+        String json = gson.toJson(gameEntry);
+        return gson.fromJson(json, GameData.class);
     }
 
     private String getAuth(String username) {

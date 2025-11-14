@@ -21,6 +21,8 @@ public class Main {
                     } else {
                         System.out.println("registering...");
                          ep.register(commands[1], commands[2], commands[3]);
+                         username = commands[1];
+                         return true;
                     }
                     break;
                 case "login":
@@ -68,7 +70,7 @@ public class Main {
                     break;
                 case "list":
                     System.out.println("Current games: ");
-                    // ep.listgames(auth)
+                     ep.listGames(username);
                     continue;
                 case "join":
                     if (commands.length != 3) {

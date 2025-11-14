@@ -51,9 +51,10 @@ public class ServerFacade {
         return handleResponse(response, GameData.class).gameID();
     }
 
-    public Map listGames(String authToken) throws ResponseException {
+    public Map<String, Object> listGames(String authToken) throws ResponseException {
         var request = buildRequest("GET", "/game", null, authToken);
         var response = sendRequest(request);
+
         return handleResponse(response, Map.class);
     }
 
