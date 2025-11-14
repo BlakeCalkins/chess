@@ -81,7 +81,7 @@ public class Main {
                     } else {
                         System.out.printf("joining game %d...", Integer.parseInt(commands[1]));
                         System.out.println();
-                        // ep.join(id, auth)
+                         ep.joinGame(commands[2], Integer.parseInt(commands[1]), username);
                     }
                     break;
                 case "observe":

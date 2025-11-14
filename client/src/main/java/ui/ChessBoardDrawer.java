@@ -11,7 +11,7 @@ import java.util.Objects;
 
 import static ui.EscapeSequences.*;
 
-public class DrawChessBoard {
+public class ChessBoardDrawer {
 
     // Board dimensions.
     private static final int BOARD_SIZE_IN_SQUARES = 8;
@@ -21,20 +21,23 @@ public class DrawChessBoard {
     private static final String SPACE = " ";
     private static final String EMPTY = "   ";
 
-    private static final ChessBoard board = new ChessBoard();
-    private static final ChessGame.TeamColor playerColor = ChessGame.TeamColor.BLACK;
+    private final ChessBoard board;
+    private final ChessGame.TeamColor playerColor;
+
+    public ChessBoardDrawer(ChessBoard board, ChessGame.TeamColor playerColor) {
+        this.board = board;
+        this.playerColor = playerColor;
+    }
 
 
-    public static void main(String[] args) {
+    public void draw() {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
 
-        board.resetBoard();
-
         drawBorders(out);
 
-        drawChessBoard(out);
+        drawBoard(out);
 
         drawBorders(out);
 
@@ -42,7 +45,7 @@ public class DrawChessBoard {
         out.print(SET_TEXT_COLOR_WHITE);
     }
 
-    private static void drawBorders(PrintStream out) {
+    private void drawBorders(PrintStream out) {
 
         setGrey(out);
 
@@ -79,7 +82,7 @@ public class DrawChessBoard {
         setGrey(out);
     }
 
-    private static void drawChessBoard(PrintStream out) {
+    private void drawBoard(PrintStream out) {
 
         String[] rows = {"8", "7", "6", "5", "4", "3", "2", "1"};
         String squareColor;
@@ -103,7 +106,7 @@ public class DrawChessBoard {
         }
     }
 
-    private static void drawRowOfSquares(PrintStream out, int boardRow, String squareColor) {
+    private void drawRowOfSquares(PrintStream out, int boardRow, String squareColor) {
 
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
