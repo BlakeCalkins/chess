@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Main {
     static EndpointParser ep = new EndpointParser();
-
+    static String username;
 
     private static boolean preLoginLoop() {
         while (true) {
@@ -30,6 +30,7 @@ public class Main {
                     } else {
                         System.out.println("logging in...");
                         if (ep.login(commands[1], commands[2])) {
+                            username = commands[1];
                             return true;
                         }
                         continue;
@@ -62,7 +63,7 @@ public class Main {
                     } else {
                         System.out.printf("creating game %s...", commands[1]);
                         System.out.println();
-                        // ep.create(name, auth)
+                         ep.createGame(commands[1], username);
                     }
                     break;
                 case "list":

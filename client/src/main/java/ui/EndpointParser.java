@@ -4,14 +4,16 @@ import datamodel.AuthData;
 import datamodel.UserData;
 import exception.ResponseException;
 import server.Server;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.*;
 
 
 public class EndpointParser {
     private static final Server server = new Server();
     private static ServerFacade facade;
-    String username;
-    String authToken;
+    Map<String, String> usersAndAuths = new HashMap<>();
 
     public EndpointParser() {
         var port = server.run(0);
@@ -20,11 +22,10 @@ public class EndpointParser {
     }
 
     public void register(String username, String password, String email) {
-        UserData data = new UserData(username, password, email);
+        UserData data = new UserData(username, email, password);
         try {
             AuthData auth = facade.register(data);
-            username = auth.username();
-            authToken = auth.authToken();
+            usersAndAuths.put(auth.username(), auth.authToken());
             System.out.printf("Successfully registered user %s", username);
             System.out.println();
         } catch (ResponseException e) {
@@ -36,13 +37,25 @@ public class EndpointParser {
         UserData data = new UserData(username, null, password);
         try {
             AuthData auth = facade.login(data);
-            username = auth.username();
-            authToken = auth.authToken();
+            usersAndAuths.put(auth.username(), auth.authToken());
             return true;
         } catch (ResponseException e) {
             System.out.println(e.parseMessage(e.getMessage()));
             return false;
         }
+    }
+
+    public void createGame(String gameName, String username) {
+        String authToken = getAuth(username);
+        try {
+            facade.createGame(gameName, authToken);
+        } catch (ResponseException e) {
+            System.out.println(e.parseMessage(e.getMessage()));
+        }
+    }
+
+    private String getAuth(String username) {
+        return usersAndAuths.get(username);
     }
 
     public void stopServer() {
