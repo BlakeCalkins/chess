@@ -1,3 +1,4 @@
+import chess.ChessGame;
 import ui.EndpointParser;
 
 import java.util.Scanner;
@@ -93,7 +94,7 @@ public class Main {
                     } else {
                         System.out.printf("observing game %d...", Integer.parseInt(commands[1]));
                         System.out.println();
-                        // ep.printStoredGame(id)
+                         ep.printGame(Integer.parseInt(commands[1]), ChessGame.TeamColor.WHITE);
                     }
                     break;
                 case "logout":

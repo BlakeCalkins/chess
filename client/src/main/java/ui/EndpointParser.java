@@ -88,15 +88,19 @@ public class EndpointParser {
             try {
                 facade.joinGame(teamColor, gameID, authToken);
                 obtainGames(authToken);
-                ChessGame game = currentGames.get(gameID).game();
-                ChessBoardDrawer drawer = new ChessBoardDrawer(game.getBoard(), teamColor);
-                drawer.draw();
+                printGame(gameID, teamColor);
             } catch (ResponseException e) {
                 System.out.println(e.parseMessage(e.getMessage()));
             }
         } catch (ResponseException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public void printGame(Integer gameID, ChessGame.TeamColor teamColor) {
+        ChessGame game = currentGames.get(gameID).game();
+        ChessBoardDrawer drawer = new ChessBoardDrawer(game.getBoard(), teamColor);
+        drawer.draw();
     }
 
     private void obtainGames(String authToken) {
