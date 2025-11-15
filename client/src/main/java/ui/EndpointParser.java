@@ -83,7 +83,8 @@ public class EndpointParser {
                 throw new ResponseException(ResponseException.Code.BadRequest, "Not a valid color.");
             }
             try {
-                facade.joinGame(teamColor, gameID, authToken);
+                Integer serverID = currentGames.get(gameID).gameID();
+                facade.joinGame(teamColor, serverID, authToken);
                 obtainGames(authToken);
                 printGame(gameID, teamColor);
             } catch (ResponseException e) {
@@ -95,9 +96,13 @@ public class EndpointParser {
     }
 
     public void printGame(Integer gameID, ChessGame.TeamColor teamColor) {
-        ChessGame game = currentGames.get(gameID).game();
-        ChessBoardDrawer drawer = new ChessBoardDrawer(game.getBoard(), teamColor);
-        drawer.draw();
+        if (currentGames.containsKey(gameID)) {
+            ChessGame game = currentGames.get(gameID).game();
+            ChessBoardDrawer drawer = new ChessBoardDrawer(game.getBoard(), teamColor);
+            drawer.draw();
+        } else {
+            System.out.println("Not a game. Please provide a valid game ID.");
+        }
     }
 
     public void logout(String username) {
@@ -114,9 +119,11 @@ public class EndpointParser {
             Map<String, Object> root = facade.listGames(authToken);
             List<Map<String, Object>> games = (List<Map<String, Object>>) root.get("games");
             currentGames.clear();
+            int clientID = 0;
             for (Map<String, Object> gameEntry : games) {
                 GameData game = parseGame(gameEntry);
-                currentGames.put(game.gameID(), game);
+                clientID += 1;
+                currentGames.put(clientID, game);
             }
         } catch (ResponseException e) {
             System.out.println(e.parseMessage(e.getMessage()));
